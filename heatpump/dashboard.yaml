@@ -68,51 +68,39 @@ views:
             title: Temperatur
       - type: vertical-stack
         cards:
-          - type: sensor
-            entity: sensor.wp_aussentemperatur
-            graph: line
-          - graph: line
-            type: sensor
-            entity: sensor.wp_vorlaufsolltemperatur
-            detail: 2
-            hours_to_show: 24
-            name: Vorlauf SOLL
-          - graph: line
-            type: sensor
-            entity: sensor.wp_vorlauftemperatur
-            detail: 2
-            hours_to_show: 24
-            name: Vorlauf IST
-          - graph: line
-            type: sensor
-            entity: sensor.wp_rucklauftemperatur
-            detail: 2
-            hours_to_show: 24
-            name: Rücklauf
-          - graph: line
-            type: sensor
-            entity: sensor.wp_warmwassersolltemperatur
-            detail: 2
-            hours_to_show: 24
-            name: Warmwasser SOLL
-          - graph: line
-            type: sensor
-            entity: sensor.wp_warmwassertemperatur
-            detail: 2
-            hours_to_show: 24
-            name: Wasrmwasser IST
-          - graph: line
-            type: sensor
-            entity: sensor.wpst_jaz_tag
-            detail: 2
-            hours_to_show: 24
-            name: JAZ Tag
-          - graph: line
-            type: sensor
-            entity: sensor.wpst_jaz_monat
-            detail: 2
-            hours_to_show: 24
-            name: JAZ Monat
+          - type: history-graph
+            entities:
+              - entity: sensor.wp_aussentemperatur
+                name: ' '
+            title: Außentemperatur 24h
+          - type: history-graph
+            entities:
+              - entity: sensor.wp_vorlaufsolltemperatur
+                name: 'Vor-Soll'
+              - entity: sensor.wp_vorlauftemperatur
+                name: 'Vor-Ist'
+              - entity: sensor.wp_rucklauftemperatur
+                name: 'Rücklauf Ist'                            
+            title: Vor & Rücklauf
+          - type: history-graph
+            entities:
+              - entity: sensor.wp_warmwassersolltemperatur
+                name: 'Soll'
+              - entity: sensor.wp_warmwassertemperatur
+                name: 'Ist'                          
+            title: Warmwasser         
+          # - graph: line
+          #   type: sensor
+          #   entity: sensor.wpst_jaz_tag
+          #   detail: 2
+          #   hours_to_show: 24
+          #   name: JAZ Tag
+          # - graph: line
+          #   type: sensor
+          #   entity: sensor.wpst_jaz_monat
+          #   detail: 2
+          #   hours_to_show: 24
+          #   name: JAZ Monat
       - type: vertical-stack
         cards:
           - type: entities
