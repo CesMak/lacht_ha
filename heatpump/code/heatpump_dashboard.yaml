@@ -78,8 +78,8 @@ views:
               #   name: WarmWasserNormal
               # - entity: sensor.WP_WarmwasserAbsenk  # fails
               #   name: WarmwasserAbsenk
-              - entity: sensor.WP_Leistungsanforderung
-                name: pump_Leistungsanforderung              
+              - entity: sensor.wp_leistungsanforderung
+                name: PumpeLeistungsanforderung              
             title: Temperatur
       - type: vertical-stack
         cards:
