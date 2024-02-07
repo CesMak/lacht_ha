@@ -73,7 +73,13 @@ views:
               - entity: sensor.wp_fehlercode # 30003
                 name: Fehlercode     
               - entity: sensor.wp_pumpenkreis
-                name: Pumpenkreis       
+                name: Pumpenkreis
+              # - entity: sensor.wp_warmwasser  # fails
+              #   name: WarmWasserNormal
+              # - entity: sensor.WP_WarmwasserAbsenk  # fails
+              #   name: WarmwasserAbsenk
+              - entity: sensor.WP_Leistungsanforderung
+                name: pump_Leistungsanforderung              
             title: Temperatur
       - type: vertical-stack
         cards:

@@ -273,9 +273,11 @@ modbus:
         slave: 1
         address: 42104
         input_type: holding
-        scale: 1
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
         offset: 0
-        precision: 0
+        precision: 1
         data_type: int16
       - name: "WP_WarmwasserSGReady"
         slave: 1
@@ -296,6 +298,7 @@ modbus:
       #   offset: 0
       #   precision: 1
       #   data_type: int16     
+      # 33102 stoermeldung -> not yet used
       - name: WP_Leistungsanforderung
         slave: 1
         address: 33103
@@ -326,38 +329,39 @@ modbus:
         offset: 0
         precision: 1
         data_type: int16
-      - name: WP_PumpeVerdampfung
-        slave: 1
-        address: 33106
-        input_type: input
-        scale: 0.1
-        offset: 0
-        precision: 1
-        data_type: int16
+      # - name: WP_PumpeVerdampfung
+      #   slave: 1
+      #   address: 33106
+      #   input_type: input
+      #   scale: 0.1
+      #   offset: 0
+      #   precision: 1
+      #   data_type: int16
       - name: WP_PumpeSauggas
         slave: 1
         address: 33107
         input_type: input
+        state_class: measurement
         scale: 0.1
         offset: 0
         precision: 1
         data_type: int16
-      - name: WP_PumpeWeiche
-        slave: 1
-        address: 33108
-        input_type: input
-        scale: 0.1
-        offset: 0
-        precision: 1
-        data_type: int16
-      - name: WP_PumpeRegenerativ
-        slave: 1
-        address: 33109
-        input_type: input
-        scale: 0.1
-        offset: 0
-        precision: 1
-        data_type: int16
+      # - name: WP_PumpeWeiche
+      #   slave: 1
+      #   address: 33108
+      #   input_type: input
+      #   scale: 0.1
+      #   offset: 0
+      #   precision: 1
+      #   data_type: int16
+      # - name: WP_PumpeRegenerativ
+      #   slave: 1
+      #   address: 33109
+      #   input_type: input
+      #   scale: 0.1
+      #   offset: 0
+      #   precision: 1
+      #   data_type: int16
       - name: WP_PumpePuffer
         slave: 1
         address: 33110
@@ -370,6 +374,7 @@ modbus:
         slave: 1
         address: 33111
         input_type: input
+        state_class: measurement
         scale: 0.1
         offset: 0
         precision: 1
@@ -377,16 +382,16 @@ modbus:
       # 43101 WP_PumpeKonfiguration
       # 43102 WP_PumpeRuhemodus
       # 43103 WP_PumpeEinschaltart
-      - name: WP_PumpeLeistungHeizen   # 20....100%
-        slave: 1
-        address: 43104
-        input_type: input
-        unit_of_measurement: "%"
-        state_class: measurement
-        scale: 0.4         # TODO ??! Scale the raw value by 0.4 to get the percentage (20% to 100%)
-        offset: 20
-        precision: 1
-        data_type: int16
+      # - name: WP_PumpeLeistungHeizen   # 20....100%
+      #   slave: 1
+      #   address: 43104
+      #   input_type: input
+      #   unit_of_measurement: "%"
+      #   state_class: measurement
+      #   scale: 0.4         # TODO ??! Scale the raw value by 0.4 to get the percentage (20% to 100%)
+      #   offset: 20
+      #   precision: 1
+      #   data_type: int16
       # - name: WP_PumpeLeistungKuehlen  # 20....100%
       #   slave: 1
       #   address: 43105
@@ -397,47 +402,47 @@ modbus:
       #   offset: 20
       #   precision: 1
       #   data_type: int16
-      - name: WP_PumpeLeistungWarmwasser   # 20....100%
-        slave: 1
-        address: 43106
-        input_type: input
-        unit_of_measurement: "%"
-        state_class: measurement
-        scale: 0.4         # TODO ??! Scale the raw value by 0.4 to get the percentage (20% to 100%)
-        offset: 20
-        precision: 1
-        data_type: int16
-      - name: WP_PumpeLeistungAbtaubetrieb # 20....100%
-        slave: 1
-        address: 43107
-        input_type: input
-        unit_of_measurement: "%"
-        state_class: measurement
-        scale: 0.4         # TODO ??! Scale the raw value by 0.4 to get the percentage (20% to 100%)
-        offset: 20
-        precision: 1
-        data_type: int16
-      - name: WP_PumpeVolumenStromHeizen   # 83...596   8.3....59.3 l/m - Step 17 = 0.1 m3/h
-        slave: 1
-        address: 43108
-        input_type: input
-        unit_of_measurement: "m3/h"
-        state_class: measurement
-        scale: 0.05555555555555556  # TODO is this correct?! Calculate scaling factor (18 steps = 0.1, 510 units = 59.3)
-        offset: 83
-        precision: 1
-        data_type: int16
+      # - name: WP_PumpeLeistungWarmwasser   # 20....100%
+      #   slave: 1
+      #   address: 43106
+      #   input_type: input
+      #   unit_of_measurement: "%"
+      #   state_class: measurement
+      #   scale: 0.4         # TODO ??! Scale the raw value by 0.4 to get the percentage (20% to 100%)
+      #   offset: 20
+      #   precision: 1
+      #   data_type: int16
+      # - name: WP_PumpeLeistungAbtaubetrieb # 20....100%
+      #   slave: 1
+      #   address: 43107
+      #   input_type: input
+      #   unit_of_measurement: "%"
+      #   state_class: measurement
+      #   scale: 0.4         # TODO ??! Scale the raw value by 0.4 to get the percentage (20% to 100%)
+      #   offset: 20
+      #   precision: 1
+      #   data_type: int16
+      # - name: WP_PumpeVolumenStromHeizen   # 83...596   8.3....59.3 l/m - Step 17 = 0.1 m3/h
+      #   slave: 1
+      #   address: 43108
+      #   input_type: input
+      #   unit_of_measurement: "m3/h"
+      #   state_class: measurement
+      #   scale: 0.05555555555555556  # TODO is this correct?! Calculate scaling factor (18 steps = 0.1, 510 units = 59.3)
+      #   offset: 83
+      #   precision: 1
+      #   data_type: int16
       #43109 Kuehlen
-      - name: WP_PumpeVolumenStromWarmwasser   # 83...596   8.3....59.3 l/m - Step 17 = 0.1 m3/h
-        slave: 1
-        address: 43110
-        input_type: input
-        unit_of_measurement: "m3/h"
-        state_class: measurement
-        scale: 0.05555555555555556  # TODO is this correct?! Calculate scaling factor (18 steps = 0.1, 510 units = 59.3)
-        offset: 83
-        precision: 1
-        data_type: int16
+      # - name: WP_PumpeVolumenStromWarmwasser   # 83...596   8.3....59.3 l/m - Step 17 = 0.1 m3/h
+      #   slave: 1
+      #   address: 43110
+      #   input_type: input
+      #   unit_of_measurement: "m3/h"
+      #   state_class: measurement
+      #   scale: 0.05555555555555556  # TODO is this correct?! Calculate scaling factor (18 steps = 0.1, 510 units = 59.3)
+      #   offset: 83
+      #   precision: 1
+      #   data_type: int16
       # 2. WEZ
       # - name: WP_WEZ2_Status  #0=Aus, 1=Ein Sonst=Undefiniert
       #   slave: 1
@@ -447,10 +452,13 @@ modbus:
       #   offset: 0
       #   precision: 0
       #   data_type: int16
+      # WEZ2
+      # WEZ2
       - name: WP_WEZ2_Betriebsstunden
         slave: 1
         address: 34102
         input_type: input
+        state_class: measurement        
         scale: 1
         offset: 0
         precision: 0
@@ -459,6 +467,7 @@ modbus:
         slave: 1
         address: 34103
         input_type: input
+        state_class: measurement    
         scale: 1
         offset: 0
         precision: 0
@@ -513,6 +522,7 @@ modbus:
         offset: 0
         precision: 1
         data_type: int16
+      #  36102
       - name: WPST_Gesamt_Monat
         slave: 1
         address: 36103
@@ -635,25 +645,25 @@ modbus:
         precision: 1
         data_type: int16
         # These parameters are not contained in my docu:
-      - name: WPST_Elektrisch_Tag
-        slave: 1
-        address: 36701
-        input_type: input
-        unit_of_measurement: kWh
-        state_class: measurement
-        device_class: energy
-        scale: 1
-        offset: 0
-        precision: 1
-        data_type: int16
-      - name: WPST_Elektrisch_Monat
-        slave: 1
-        address: 36703
-        input_type: input
-        unit_of_measurement: kWh
-        state_class: measurement
-        device_class: energy
-        scale: 1
-        offset: 0
-        precision: 1
-        data_type: int16
+      # - name: WPST_Elektrisch_Tag
+      #   slave: 1
+      #   address: 36701
+      #   input_type: input
+      #   unit_of_measurement: kWh
+      #   state_class: measurement
+      #   device_class: energy
+      #   scale: 1
+      #   offset: 0
+      #   precision: 1
+      #   data_type: int16
+      # - name: WPST_Elektrisch_Monat
+      #   slave: 1
+      #   address: 36703
+      #   input_type: input
+      #   unit_of_measurement: kWh
+      #   state_class: measurement
+      #   device_class: energy
+      #   scale: 1
+      #   offset: 0
+      #   precision: 1
+      #   data_type: int16
