@@ -1,154 +1,160 @@
-title: Home
-views:
-  - title: Wärmepumpe
-    path: waermepumpe
-    subview: false
-    icon: mdi:heating-coil
-    badges:
-      - entity: sensor.wp_warmwassertemperatur
-        name: WW
-      - entity: sensor.wp_vorlauftemperatur
-        name: Vorlauf
-      - entity: sensor.wp_rucklauftemperatur
-        name: Rücklauf
-      - entity: sensor.wp_betrieb_txt
-        name: Modus
-      - entity: sensor.wp_warnungscode
-        name: Wcode
-      - entity: sensor.wpst_jaz_tag
-        name: JAZ Tag
-      - entity: sensor.wpst_jaz_monat
-        name: JAZ Monat
-      - entity: sensor.wp_e1_stunden
-        name: E1
-      - entity: sensor.wp_e2_stunden
-        name: E2
-    cards:
-      - type: vertical-stack
-        cards:
-          - type: conditional
-            conditions:
-              - entity: sensor.wp_stoerungsfrei
-                state: '0'
-            card:
-              type: entity
-              entity: sensor.wp_warnungscode
-              name: Fehlercode
-              icon: mdi:alarm-light
-          - type: history-graph
-            entities:
-              - entity: sensor.wp_betrieb_txt
-                name: ' '
-            title: Betriebsmodus 24h
-            hours_to_show: 24
-          - type: history-graph
-            entities:
-              - entity: sensor.wp_betrieb_txt
-                name: ' '
-            title: Betriebsmodus 4h
-            hours_to_show: 4
-          - type: entities
-            entities:
-              - entity: sensor.wp_aussentemperatur
-                name: Außentemperatur
-              - entity: sensor.wp_vorlaufsolltemperatur
-                name: Vorlauf SOLL
-              - entity: sensor.wp_vorlauftemperatur
-                name: Vorlauf IST
-              - entity: sensor.wp_rucklauftemperatur
-                name: Rücklauf
-              - entity: sensor.wp_warmwassersolltemperatur
-                name: Warmwasser SOLL
-              - entity: sensor.wp_warmwassertemperatur
-                name: Warmwasser IST
-              - entity: sensor.wp_warmwasserpush
-                name: Warmwasserpush (min)
-              - entity: sensor.wp_raumsolltemperatur
-                name: Raum SOLL
-                # from here on all other values:
-              - entity: sensor.wp_systembetriebsart
-                name: Systembetriebsart # Heizen Kühlen Automatik Standby....              
-              - entity: sensor.wp_aussentemperatur2
-                name: Außentemperatur_Sensor_2
-              - entity: sensor.wp_fehlercode # 30003
-                name: Fehlercode     
-              - entity: sensor.wp_pumpenkreis
-                name: Pumpenkreis
-              # - entity: sensor.wp_warmwasser  # fails
-              #   name: WarmWasserNormal
-              # - entity: sensor.WP_WarmwasserAbsenk  # fails
-              #   name: WarmwasserAbsenk
-              - entity: sensor.wp_leistungsanforderung
-                name: PumpenkreisLeistungsanforderung              
-            title: Temperatur
-      - type: vertical-stack
-        cards:
-          - type: history-graph
-            entities:
-              - entity: sensor.wp_aussentemperatur
-                name: ' '
-            title: Außentemperatur 24h
-          - type: history-graph
-            entities:
-              - entity: sensor.wp_vorlaufsolltemperatur
-                name: 'Vor-Soll'
-              - entity: sensor.wp_vorlauftemperatur
-                name: 'Vor-Ist'
-              - entity: sensor.wp_rucklauftemperatur
-                name: 'Rücklauf Ist'                            
-            title: Vor & Rücklauf
-          - type: history-graph
-            entities:
-              - entity: sensor.wp_warmwassersolltemperatur
-                name: 'Soll'
-              - entity: sensor.wp_warmwassertemperatur
-                name: 'Ist'                          
-            title: Warmwasser         
-          - graph: line
-            type: sensor
-            entity: sensor.wpst_jaz_tag
-            detail: 2
-            hours_to_show: 24
-            name: JAZ Tag
-          - graph: line
-            type: sensor
-            entity: sensor.wpst_jaz_monat
-            detail: 2
-            hours_to_show: 24
-            name: JAZ Monat
-      - type: vertical-stack
-        cards:
-          - type: entities
-            entities:
-              - entity: sensor.wpst_elektrisch_tag
-                name: elekt. Energie Tag
-              - entity: sensor.wpst_gesamt_tag
-                name: therm. Energie gesamt Tag
-              - entity: sensor.wpst_heizen_tag
-                name: therm. Energie Heizen Tag
-              - entity: sensor.wpst_ww_tag
-                name: therm. Energie WW Tag
-              - entity: sensor.wpst_kuehlen_tag
-                name: therm. Energie Kühlen Tag
-            state_color: false
-            title: Energie (Tag)
-          - type: entities
-            entities:
-              - entity: sensor.wpst_elektrisch_monat
-                name: elekt. Energie Monat
-              - entity: sensor.wpst_gesamt_monat
-                name: therm. Energie gesamt Monat
-              - entity: sensor.wpst_heizen_monat
-                name: therm. Energie Heizen Monat
-              - entity: sensor.wpst_ww_monat
-                name: therm. Energie WW Monat
-              - entity: sensor.wpst_kuehlen_monat
-                name: therm. Energie Kühlen Monat
-            title: Energie (Monat)
-          - type: entities
-            entities:
-              - entity: sensor.wp_e1_status
-              - entity: sensor.wp_e1_stunden
-              - entity: sensor.wp_e2_status
-              - entity: sensor.wp_e2_stunden
-            title: 2.Wärme Erzeuger
+  title: Home
+  views:
+    - title: Wärmepumpe
+      path: waermepumpe
+      subview: false
+      icon: mdi:heating-coil
+      badges:
+        - entity: climate.wp_warmwasser
+          name: WC  # warm water temperature can be changed here!
+        - entity: sensor.wp_warmwassertemperatur
+          name: WW
+        - entity: sensor.wp_vorlauftemperatur
+          name: Vorlauf
+        - entity: sensor.wp_rucklauftemperatur
+          name: Rücklauf
+        - entity: sensor.wp_betrieb_txt
+          name: Modus
+        - entity: sensor.wp_warnungscode
+          name: Wcode
+        - entity: sensor.wpst_jaz_tag
+          name: JAZ Tag
+        - entity: sensor.wpst_jaz_monat
+          name: JAZ Monat
+        - entity: sensor.wp_e1_stunden
+          name: E1
+        - entity: sensor.wp_e2_stunden
+          name: E2
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: conditional
+              conditions:
+                - entity: sensor.wp_stoerungsfrei
+                  state: '0'
+              card:
+                type: entity
+                entity: sensor.wp_warnungscode
+                name: Fehlercode
+                icon: mdi:alarm-light
+            - type: history-graph
+              entities:
+                - entity: sensor.wp_betrieb_txt
+                  name: ' '
+              title: Betriebsmodus 24h
+              hours_to_show: 24
+            - type: history-graph
+              entities:
+                - entity: sensor.wp_betrieb_txt
+                  name: ' '
+              title: Betriebsmodus 4h
+              hours_to_show: 4
+            - type: entities
+              entities:
+                - entity: sensor.wp_aussentemperatur
+                  name: Außentemperatur
+                - entity: sensor.wp_vorlaufsolltemperatur
+                  name: Vorlauf SOLL
+                - entity: sensor.wp_vorlauftemperatur
+                  name: Vorlauf IST
+                - entity: sensor.wp_rucklauftemperatur
+                  name: Rücklauf
+                - entity: sensor.wp_warmwassersolltemperatur
+                  name: Warmwasser SOLL
+                - entity: sensor.wp_warmwassertemperatur
+                  name: Warmwasser IST
+                - entity: sensor.wp_warmwasserpush
+                  name: Warmwasserpush (min)
+                - entity: sensor.wp_raumsolltemperatur
+                  name: Raum SOLL
+                  # from here on all other values:
+                - entity: sensor.wp_systembetriebsart
+                  name: Systembetriebsart # Heizen Kühlen Automatik Standby....              
+                - entity: sensor.wp_aussentemperatur2
+                  name: Außentemperatur_Sensor_2
+                - entity: sensor.wp_fehlercode # 30003
+                  name: Fehlercode     
+                - entity: sensor.wp_pumpenkreis
+                  name: Pumpenkreis
+                # - entity: sensor.wp_warmwasser  # fails
+                #   name: WarmWasserNormal
+                # - entity: sensor.WP_WarmwasserAbsenk  # fails
+                #   name: WarmwasserAbsenk
+                - entity: sensor.wp_leistungsanforderung
+                  name: PumpenkreisLeistungsanforderung
+                - entity: sensor.wp_pumpesauggas
+                  name: PumpeSauggas
+                - entity: sensor.wp_pumpesummenvorlauf
+                  name: PumpeSummenvorlauf
+              title: Temperatur
+        - type: vertical-stack
+          cards:
+            - type: history-graph
+              entities:
+                - entity: sensor.wp_aussentemperatur
+                  name: ' '
+              title: Außentemperatur 24h
+            - type: history-graph
+              entities:
+                - entity: sensor.wp_vorlaufsolltemperatur
+                  name: 'Vor-Soll'
+                - entity: sensor.wp_vorlauftemperatur
+                  name: 'Vor-Ist'
+                - entity: sensor.wp_rucklauftemperatur
+                  name: 'Rücklauf Ist'                            
+              title: Vor & Rücklauf
+            - type: history-graph
+              entities:
+                - entity: sensor.wp_warmwassersolltemperatur
+                  name: 'Soll'
+                - entity: sensor.wp_warmwassertemperatur
+                  name: 'Ist'                          
+              title: Warmwasser
+            - graph: line
+              type: sensor
+              entity: sensor.wpst_jaz_tag
+              detail: 2
+              hours_to_show: 24
+              name: JAZ Tag
+            - graph: line
+              type: sensor
+              entity: sensor.wpst_jaz_monat
+              detail: 2
+              hours_to_show: 24
+              name: JAZ Monat
+        - type: vertical-stack
+          cards:
+            - type: entities
+              entities:
+                - entity: sensor.wpst_elektrisch_tag
+                  name: elekt. Energie Tag
+                - entity: sensor.wpst_gesamt_tag
+                  name: therm. Energie gesamt Tag
+                - entity: sensor.wpst_heizen_tag
+                  name: therm. Energie Heizen Tag
+                - entity: sensor.wpst_ww_tag
+                  name: therm. Energie WW Tag
+                - entity: sensor.wpst_kuehlen_tag
+                  name: therm. Energie Kühlen Tag
+              state_color: false
+              title: Energie (Tag)
+            - type: entities
+              entities:
+                - entity: sensor.wpst_elektrisch_monat
+                  name: elekt. Energie Monat
+                - entity: sensor.wpst_gesamt_monat
+                  name: therm. Energie gesamt Monat
+                - entity: sensor.wpst_heizen_monat
+                  name: therm. Energie Heizen Monat
+                - entity: sensor.wpst_ww_monat
+                  name: therm. Energie WW Monat
+                - entity: sensor.wpst_kuehlen_monat
+                  name: therm. Energie Kühlen Monat
+              title: Energie (Monat)
+            - type: entities
+              entities:
+                - entity: sensor.wp_e1_status
+                - entity: sensor.wp_e1_stunden
+                - entity: sensor.wp_e2_status
+                - entity: sensor.wp_e2_stunden
+              title: 2.Wärme Erzeuger

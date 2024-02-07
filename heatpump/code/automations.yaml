@@ -1,18 +1,18 @@
 automations:
   # Heatpump Automations
   # some automations: load warmwater every day at 14:00 for 30minutes
-  - alias: "WP_Warmwasser_Load"
-    trigger:
-      - platform: time
-        at: "14:00:00"
-    action:
-      - service: modbus.write_register
-        data:
-          hub: wpump
-          address: 42102
-          slave: 1
-          value: 30
-    mode: single
+  # - alias: "WP_Warmwasser_Load"
+  #   trigger:
+  #     - platform: time
+  #       at: "14:00:00"
+  #   action:
+  #     - service: modbus.write_register
+  #       data:
+  #         hub: wpump
+  #         address: 42102
+  #         slave: 1
+  #         value: 30
+  #   mode: single
 
   - name: "SystembetriebsartChange"
     unique_id: wpump_mode

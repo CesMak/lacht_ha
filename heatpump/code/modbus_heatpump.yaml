@@ -645,25 +645,25 @@ modbus:
         precision: 1
         data_type: int16
         # These parameters are not contained in my docu:
-      # - name: WPST_Elektrisch_Tag
-      #   slave: 1
-      #   address: 36701
-      #   input_type: input
-      #   unit_of_measurement: kWh
-      #   state_class: measurement
-      #   device_class: energy
-      #   scale: 1
-      #   offset: 0
-      #   precision: 1
-      #   data_type: int16
-      # - name: WPST_Elektrisch_Monat
-      #   slave: 1
-      #   address: 36703
-      #   input_type: input
-      #   unit_of_measurement: kWh
-      #   state_class: measurement
-      #   device_class: energy
-      #   scale: 1
-      #   offset: 0
-      #   precision: 1
-      #   data_type: int16
+      - name: WPST_Elektrisch_Tag
+        slave: 1
+        address: 36701
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_Elektrisch_Monat
+        slave: 1
+        address: 36703
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
