@@ -6,10 +6,10 @@ modbus:
     climates:
     # Warmwasser
       - name: "WP_Warmwasser" # WPWarmWasser_Normal
-        address: 42103
-        input_type: holding
-        data_type: int16
-        max_temp: 50
+        slave: 1
+        address: 32102  #42103
+        input_type: input
+        max_temp: 65
         min_temp: 15
         offset: 0
         precision: 1

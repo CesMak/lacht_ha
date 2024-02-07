@@ -63,8 +63,11 @@ you can increase other views
 
 <!-- 
 ## TODO
-* TODO teste aus werte zu veraendern!
-* modbus parameter in execl kommentieren und nachschlagen was diese bedeuten
-* take a look at errocodes.yaml
+* Teste: 
+* heat_pump_electric_power (JAZ Berechnung!) kein Wert wird angezeigt!
+* WP_Warmwasser_Load automatisch          WP_Warmwasser_Load
+* Teste systembetriebsartChange aendern!  SystembetriebsartChange
+* put WP_Warmwasser on the main screen -> adjusting works!!!
+
 * save data to a db? how long is the data stored in HA? 
 -->
