@@ -3,3 +3,4 @@ heatpump/imgs
 keys
 heatpump/.~lock.*
 PV/
+__pycache__
