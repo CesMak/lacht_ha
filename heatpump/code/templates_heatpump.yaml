@@ -86,6 +86,34 @@ template:
       state: >
         {{ (float(states('sensor.WPST_Gesamt_Monat')) / float(states('sensor.WPST_Heizen_Monat')))|round(2) }}
 
+    # thanks to rafdev18, thrymr in: https://community.home-assistant.io/t/weishaupt-heatpump-integration-via-modbus/436823/110
+    - name: "value_jitter_integration_fix"
+      friendly_name: Value Integration Jitter Fix
+      value_template: >
+        {% set minutes = (now().hour * 60) + now().minute %}
+        {% set is_positive = (minutes // 10) % 2 == 0 %}
+        {% set value = 0.001 if is_positive else -0.001 %}
+        {{ value }}
+
+    - name: "heat_pump_electric_power"
+      friendly_name: “Heat Pump Power”
+      unit_of_measurement: "kW"
+      device_class: power
+      unique_id: “0412660815061367648539”
+      value_template: >
+        {% set base_power = 0.017 + states('sensor.value_jitter_integration_fix') | float(default=0) + states('sensor.wp_leistungsanforderung') | float(default=0) * 0.0189 %}
+        {% set additional_power = 0 %}
+        {% if states('sensor.wp_e1_status') == '1' %}
+        {% set additional_power = additional_power + 3.5 %}
+        {% endif %}
+        {% if states('sensor.wp_e2_status') == '1' %}
+        {% set additional_power = additional_power + 3.5 %}
+        {% endif %}
+        {{ base_power + additional_power }}
+        attribute_templates:
+        last_update: 1
+
+
     - name: "wp_fehler_txt" # source: https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83315301.pdf
       attributes:
             errornumber: "{{ states('sensor.wp_fehlercode') | int }}"
