@@ -65,6 +65,15 @@ views:
                 name: Warmwasserpush (min)
               - entity: sensor.wp_raumsolltemperatur
                 name: Raum SOLL
+                # from here on all other values:
+              - entity: sensor.wp_systembetriebsart
+                name: Systembetriebsart # Heizen Kühlen Automatik Standby....              
+              - entity: sensor.wp_aussentemperatur2
+                name: Außentemperatur_Sensor_2
+              - entity: sensor.wp_fehlercode # 30003
+                name: Fehlercode     
+              - entity: sensor.wp_pumpenkreis
+                name: Pumpenkreis       
             title: Temperatur
       - type: vertical-stack
         cards:
@@ -89,18 +98,18 @@ views:
               - entity: sensor.wp_warmwassertemperatur
                 name: 'Ist'                          
             title: Warmwasser         
-          # - graph: line
-          #   type: sensor
-          #   entity: sensor.wpst_jaz_tag
-          #   detail: 2
-          #   hours_to_show: 24
-          #   name: JAZ Tag
-          # - graph: line
-          #   type: sensor
-          #   entity: sensor.wpst_jaz_monat
-          #   detail: 2
-          #   hours_to_show: 24
-          #   name: JAZ Monat
+          - graph: line
+            type: sensor
+            entity: sensor.wpst_jaz_tag
+            detail: 2
+            hours_to_show: 24
+            name: JAZ Tag
+          - graph: line
+            type: sensor
+            entity: sensor.wpst_jaz_monat
+            detail: 2
+            hours_to_show: 24
+            name: JAZ Monat
       - type: vertical-stack
         cards:
           - type: entities

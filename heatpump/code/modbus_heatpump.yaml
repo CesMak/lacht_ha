@@ -1,0 +1,659 @@
+modbus:
+  - name: wpump
+    type: tcp
+    host: !secret heatpump_modbus_host_ip
+    port: !secret heatpump_modbus_port
+    climates:
+    # Warmwasser
+      - name: "WP_Warmwasser" # WPWarmWasser_Normal
+        address: 42103
+        input_type: holding
+        data_type: int16
+        max_temp: 50
+        min_temp: 15
+        offset: 0
+        precision: 1
+        scale: 0.1
+        target_temp_register: 42103
+        temp_step: 1
+        temperature_unit: C
+        unique_id: 2d82d1e5-0c3d-4dfc-9b21-2233ce2a2739
+    sensors:
+      #System
+      - name: WP_Außentemperatur
+        slave: 1
+        address: 30001
+        input_type: input
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_Außentemperatur2
+        slave: 1
+        address: 30002
+        input_type: input
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16       
+      - name: WP_Fehlercode
+        slave: 1
+        address: 30003
+        input_type: input
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16
+      - name: WP_warnungscode
+        slave: 1
+        address: 30004
+        input_type: input
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16     
+      - name: WP_Stoerungsfrei
+        slave: 1
+        address: 30005
+        input_type: input
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16           
+      - name: WP_Betrieb
+        slave: 1
+        address: 30006
+        input_type: input
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16
+        unique_id: wpump.betrieb
+      - name: WP_Systembetriebsart
+        slave: 1
+        address: 40001
+        input_type: holding
+        data_type: int16
+        unique_id: wpump.systembetriebsart
+      # - name: WP_Leistungsvorgabe # el. 0....30kW 40002; FAILS
+      #   slave: 1
+      #   address: 40002
+      #   input_type: input
+      #   scale: 1
+      #   offset: 0
+      #   precision: 1
+      #   data_type: int16
+      #Heizkreis
+      - name: WP_Raumsolltemperatur
+        slave: 1
+        address: 31101
+        input_type: input
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      # - name: WP_RaumTemperatur # Fails shows only: -3276 -> no sensor connected?
+      #   slave: 1
+      #   address: 31102
+      #   input_type: input
+      #   unit_of_measurement: °C
+      #   state_class: measurement
+      #   scale: 0.1
+      #   offset: 0
+      #   precision: 1
+      #   data_type: int16
+      # - name: WP_RaumFeuchte # Fails shows -0.1 
+      #   slave: 1
+      #   address: 31103
+      #   input_type: input
+      #   scale: 0.1
+      #   offset: 0
+      #   precision: 1
+      #   data_type: int16
+      - name: WP_Vorlaufsolltemperatur
+        slave: 1
+        address: 31104
+        input_type: input
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_Pumpenkreis
+        slave: 1
+        address: 41101
+        input_type: holding
+        data_type: int16
+        unique_id: wpump.pumpenkreis
+      # - name: WP_PumpenkreisAnforderung
+      #   slave: 1
+      #   address: 41102
+      #   input_type: holding
+      #   data_type: int16
+      #   unique_id: wpump.pumpenkreisanforderung
+      - name: WP_Heizkreis_Betriebsart
+        slave: 1
+        address: 41103
+        input_type: holding
+        data_type: int16
+        unique_id: wpump.heizkreisBetriebsart
+      # - name: WP_HeizkreisPartyPause
+      #   slave: 1
+      #   address: 41104
+      #   input_type: holding
+      #   state_class: measurement
+      #   scale: 0.01
+      #   offset: 0
+      #   precision: 2
+      #   data_type: int16     
+      - name: WP_RaumSollKomfort
+        slave: 1
+        address: 41105
+        input_type: holding
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_RaumSollNormal
+        slave: 1
+        address: 41106
+        input_type: holding
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_RaumSollAbsenk
+        slave: 1
+        address: 41107
+        input_type: holding
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16                    
+      # - name: WP_Heizkurve # missconfigured!
+      #   slave: 1
+      #   address: 41108
+      #   input_type: holding
+      #   state_class: measurement
+      #   scale: 0.01
+      #   offset: 0
+      #   precision: 2
+      #   data_type: int16
+      # - name: WP_SommerWinterUmschaltung
+      #   slave: 1
+      #   address: 41109
+      #   input_type: holding
+      #   state_class: measurement
+      #   scale: 0.01
+      #   offset: 0
+      #   precision: 2
+      #   data_type: int16
+      # - name: WP_Heizen_Konstanttemperatur        #Tag
+      #   slave: 1
+      #   address: 41110
+      #   input_type: holding
+      #   state_class: measurement
+      #   scale: 0.01
+      #   offset: 0
+      #   precision: 2
+      #   data_type: int16
+      # - name: WP_Heizen_KonstanttemperaturAbsenk # Nacht
+      #   slave: 1
+      #   address: 41111
+      #   input_type: holding
+      #   state_class: measurement
+      #   scale: 0.01
+      #   offset: 0
+      #   precision: 2
+      #   data_type: int16
+      # - name: WP_Kuehlen_Konstanttemperatur
+      #   slave: 1
+      #   address: 41112
+      #   input_type: holding
+      #   state_class: measurement
+      #   scale: 0.01
+      #   offset: 0
+      #   precision: 2
+      #   data_type: int16      
+      #Warmwasser
+      - name: WP_Warmwassersolltemperatur
+        slave: 1
+        address: 32101
+        input_type: input
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+        unique_id: wpump.wwsolltemp
+      - name: WP_Warmwassertemperatur
+        slave: 1
+        address: 32102
+        input_type: input
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+        unique_id: wpump.wwtemp
+      # - name: WP_WarmWasserKonfiguration # aus umlenkventil, pumpe
+      #   slave: 1
+      #   address: 42101
+      #   input_type: holding
+      #   state_class: measurement
+      #   scale: 0.01
+      #   offset: 0
+      #   precision: 2
+      #   data_type: int16   
+      - name: "WP_WarmwasserPush" #0=Aus, 5....240MIN
+        slave: 1
+        address: 42102
+        input_type: holding
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16
+      # 42103 see under climates
+      - name: "WP_WarmwasserAbsenk"
+        slave: 1
+        address: 42104
+        input_type: holding
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16
+      - name: "WP_WarmwasserSGReady"
+        slave: 1
+        address: 42105
+        input_type: holding
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16
+      #Waermepumpe
+      # - name: WP_PumpeBetriebAnzeige
+      #   slave: 1
+      #   address: 33101
+      #   input_type: input
+      #   unit_of_measurement: "%"  ## TODO ???!
+      #   state_class: measurement
+      #   scale: 1
+      #   offset: 0
+      #   precision: 1
+      #   data_type: int16     
+      - name: WP_Leistungsanforderung
+        slave: 1
+        address: 33103
+        input_type: input
+        unit_of_measurement: "%"
+        state_class: measurement
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_Vorlauftemperatur
+        slave: 1
+        address: 33104
+        input_type: input
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_Rücklauftemperatur
+        slave: 1
+        address: 33105
+        input_type: input
+        unit_of_measurement: °C
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_PumpeVerdampfung
+        slave: 1
+        address: 33106
+        input_type: input
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_PumpeSauggas
+        slave: 1
+        address: 33107
+        input_type: input
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_PumpeWeiche
+        slave: 1
+        address: 33108
+        input_type: input
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_PumpeRegenerativ
+        slave: 1
+        address: 33109
+        input_type: input
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_PumpePuffer
+        slave: 1
+        address: 33110
+        input_type: input
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WP_PumpeSummenvorlauf # (ab V5.1 R04 enthalten)
+        slave: 1
+        address: 33111
+        input_type: input
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: int16
+      # 43101 WP_PumpeKonfiguration
+      # 43102 WP_PumpeRuhemodus
+      # 43103 WP_PumpeEinschaltart
+      - name: WP_PumpeLeistungHeizen   # 20....100%
+        slave: 1
+        address: 43104
+        input_type: input
+        unit_of_measurement: "%"
+        state_class: measurement
+        scale: 0.4         # TODO ??! Scale the raw value by 0.4 to get the percentage (20% to 100%)
+        offset: 20
+        precision: 1
+        data_type: int16
+      # - name: WP_PumpeLeistungKuehlen  # 20....100%
+      #   slave: 1
+      #   address: 43105
+      #   input_type: input
+      #   unit_of_measurement: "%"
+      #   state_class: measurement
+      #   scale: 0.4         # TODO ??! Scale the raw value by 0.4 to get the percentage (20% to 100%)
+      #   offset: 20
+      #   precision: 1
+      #   data_type: int16
+      - name: WP_PumpeLeistungWarmwasser   # 20....100%
+        slave: 1
+        address: 43106
+        input_type: input
+        unit_of_measurement: "%"
+        state_class: measurement
+        scale: 0.4         # TODO ??! Scale the raw value by 0.4 to get the percentage (20% to 100%)
+        offset: 20
+        precision: 1
+        data_type: int16
+      - name: WP_PumpeLeistungAbtaubetrieb # 20....100%
+        slave: 1
+        address: 43107
+        input_type: input
+        unit_of_measurement: "%"
+        state_class: measurement
+        scale: 0.4         # TODO ??! Scale the raw value by 0.4 to get the percentage (20% to 100%)
+        offset: 20
+        precision: 1
+        data_type: int16
+      - name: WP_PumpeVolumenStromHeizen   # 83...596   8.3....59.3 l/m - Step 17 = 0.1 m3/h
+        slave: 1
+        address: 43108
+        input_type: input
+        unit_of_measurement: "m3/h"
+        state_class: measurement
+        scale: 0.05555555555555556  # TODO is this correct?! Calculate scaling factor (18 steps = 0.1, 510 units = 59.3)
+        offset: 83
+        precision: 1
+        data_type: int16
+      #43109 Kuehlen
+      - name: WP_PumpeVolumenStromWarmwasser   # 83...596   8.3....59.3 l/m - Step 17 = 0.1 m3/h
+        slave: 1
+        address: 43110
+        input_type: input
+        unit_of_measurement: "m3/h"
+        state_class: measurement
+        scale: 0.05555555555555556  # TODO is this correct?! Calculate scaling factor (18 steps = 0.1, 510 units = 59.3)
+        offset: 83
+        precision: 1
+        data_type: int16
+      # 2. WEZ
+      # - name: WP_WEZ2_Status  #0=Aus, 1=Ein Sonst=Undefiniert
+      #   slave: 1
+      #   address: 34101
+      #   input_type: input
+      #   scale: 1
+      #   offset: 0
+      #   precision: 0
+      #   data_type: int16
+      - name: WP_WEZ2_Betriebsstunden
+        slave: 1
+        address: 34102
+        input_type: input
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16
+      - name: WP_WEZ2_Schaltspiele
+        slave: 1
+        address: 34103
+        input_type: input
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16
+      - name: WP_E1_Status
+        slave: 1
+        address: 34104
+        input_type: input
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16
+      - name: WP_E2_Status
+        slave: 1
+        address: 34105
+        input_type: input
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16
+      - name: WP_E1_Stunden
+        slave: 1
+        address: 34106
+        input_type: input
+        unit_of_measurement: h
+        state_class: measurement
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16
+      - name: WP_E2_Stunden
+        slave: 1
+        address: 34107
+        input_type: input
+        unit_of_measurement: h
+        state_class: measurement
+        scale: 1
+        offset: 0
+        precision: 0
+        data_type: int16
+      # 44101 - 44106 
+      # Eingaenge 35101 - 35108, 45101 - 45108
+      #Stats
+      - name: WPST_Gesamt_Tag
+        slave: 1
+        address: 36101
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_Gesamt_Monat
+        slave: 1
+        address: 36103
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_Gesamt_Jahr
+        slave: 1
+        address: 36104
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_Heizen_Tag
+        slave: 1
+        address: 36201
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_Heizen_Monat
+        slave: 1
+        address: 36203
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_Heizen_Jahr
+        slave: 1
+        address: 36204
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_WW_Tag
+        slave: 1
+        address: 36301
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_WW_Monat
+        slave: 1
+        address: 36303
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_WW_Jahr
+        slave: 1
+        address: 36304
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_Kuehlen_Tag
+        slave: 1
+        address: 36401
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_Kuehlen_Monat
+        slave: 1
+        address: 36403
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_Kuehlen_Jahr
+        slave: 1
+        address: 36404
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+        # These parameters are not contained in my docu:
+      - name: WPST_Elektrisch_Tag
+        slave: 1
+        address: 36701
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
+      - name: WPST_Elektrisch_Monat
+        slave: 1
+        address: 36703
+        input_type: input
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+        scale: 1
+        offset: 0
+        precision: 1
+        data_type: int16
