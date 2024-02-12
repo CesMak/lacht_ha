@@ -45,6 +45,7 @@ Here I explain only how to do it using HA.
     + *[secrets.yaml](code/secrets.yaml)* create this file if it does not exist.
     + *[integrations/modbus_heatpump.yaml](code/modbus_heatpump.yaml)*
     + *[integrations/templates_heatpump.yaml](code/templates_heatpump.yaml)*
+    + *[automations.yaml](code/automations.yaml)
 * in HA -> overview -> edit dashboard -> Raw configuration editor:
     + *[heatpump_dashboard.yaml](code/heatpump_dashboard.yaml)*
 * HA -> Settings -> (dots upper right) -> Restart (do a full restart!)
@@ -61,6 +62,15 @@ you can increase other views
 ![alt text](doc/tmp.png)
 
 
+Warmwater push every day at 2pm for 30min.
+![alt text](doc/ww_pushautomation.png)
+
+
+Settings -> automation
+
+the Warm water push automation should show up:
+
+![alt text](doc/automations.png)
 <!-- 
 ## TODO
 * Teste: 
