@@ -1,0 +1,29 @@
+template:
+  - sensor:
+      # water pillar hight measured from the bottom of the zistern in mm
+      # 100% = 1767 (range tasmota) = 2.51m water pillar, 12178,933688297 liters
+      # r = 1.25m radius of the zistern
+      # corrector factor of 142l = 0.0289m = 28.9mm water pillar
+      - name: "ZZ_waterLevel"
+        unit_of_measurement: m
+        device_class: water
+        state: >
+          {% set t = states('sensor.zz_range') |  int(default=1) %}
+            {% h =  (t * 0.001420487) - 0.029 | float | round(2) %}
+            {{ '{:.1f}'.format(h) }}
+      - name: "ZZ_liters"
+        unit_of_measurement: l
+        device_class: water
+        state: >
+          {% set t = states('sensor.zz_range') |   int(default=1) %}
+          {% set pi = 3.14159265359  %}
+          {% set r = 1.25  %}
+          {% set h = (t * 0.001420487) - 0.029  %}
+          {% set v = h * pi *r*r *1000 | int | round() %}
+          {{ '{:.1f}'.format(v) }}
+      - name: "ZZ_percentage" # 100% = 12.321 m3
+        unit_of_measurement: "%"
+        device_class: water
+        state: >
+          {% set value=states('sensor.zz_liters') | float(default=1) / 12178.933688297 * 100 | round(2)  %}
+          {{ '{:.1f}'.format(value) }}
