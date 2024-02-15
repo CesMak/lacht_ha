@@ -9,7 +9,7 @@ template:
         device_class: water
         state: >
           {% set t = states('sensor.zz_range') |  int(default=1) %}
-            {% h =  (t * 0.001420487) - 0.029 | float | round(2) %}
+            {% set h =  (t * 0.001420487) - 0.029 | float | round(2) %}
             {{ '{:.1f}'.format(h) }}
       - name: "ZZ_liters"
         unit_of_measurement: l
