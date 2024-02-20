@@ -158,3 +158,17 @@
                 - entity: sensor.wp_e2_status
                 - entity: sensor.wp_e2_stunden
               title: 2.Wärme Erzeuger
+            - type: history-graph
+              entities:
+                - entity: sensor.heat_pump_electric_power
+                  name: heatpump electric power W
+                - entity: sensor.load_power
+                  name: Haushaltsverbrauch
+              title: Power consumption
+              hours_to_show: 4
+            - type: history-graph
+              entities:
+                - entity: sensor.wp_leistungsanforderung
+                  name:  Leistungsanforderung pumpe
+              title: Leistungsanforderung pumpe   
+              hours_to_show: 4

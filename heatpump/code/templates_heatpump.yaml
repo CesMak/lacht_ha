@@ -78,23 +78,23 @@ template:
           ERROR           
         {% endif %}
 
-    - name: "wpst_jaz_tag"
-      state: >
-        {{ (float(states('sensor.WPST_Gesamt_Tag')) / float(states('sensor.WPST_Heizen_Tag')))|round(2) }}
+    # - name: "wpst_jaz_tag"
+    #   state: >
+    #     {{ (float(states('sensor.WPST_Gesamt_Tag')) / float(states('sensor.WPST_Heizen_Tag')))|round(2) }}
 
-    - name: "wpst_jaz_monat"
-      state: >
-        {{ (float(states('sensor.WPST_Gesamt_Monat')) / float(states('sensor.WPST_Heizen_Monat')))|round(2) }}
+    # - name: "wpst_jaz_monat"
+    #   state: >
+    #     {{ (float(states('sensor.WPST_Gesamt_Monat')) / float(states('sensor.WPST_Heizen_Monat')))|round(2) }}
 
     - name: "value_jitter_integration_fix"     # regarding correct power consumption measurements: see @rafdev in https://community.home-assistant.io/t/weishaupt-heatpump-integration-via-modbus/436823
       state: >
         {% set minutes = (now().hour * 60) + now().minute %}
         {% set is_positive = (minutes // 10) % 2 == 0 %}
-        {% set value = 0.001 if is_positive else -0.001 %}
-        {{ value }}
+        {% set value = 0.001 if is_positive else - 0.001 %}
+        {{ value | float(default=0.001) }}
 
     - name: "heat_pump_electric_power"
-      unit_of_measurement: "kW"
+      unit_of_measurement: "W"
       device_class: power
       unique_id: “0412660815061367648539”
       state: >
@@ -106,9 +106,7 @@ template:
         {% if states('sensor.wp_e2_status') == '1' %}
         {% set additional_power = additional_power + 3.5 %}
         {% endif %}
-        {{ base_power + additional_power }}
-        attribute_templates:
-        last_update: 1
+        {{ (base_power + additional_power) * 1000}}
 
     - name: "wp_fehler_txt" # source: https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83315301.pdf
       attributes:
