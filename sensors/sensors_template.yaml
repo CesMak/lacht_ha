@@ -27,3 +27,11 @@ template:
         state: >
           {% set value=states('sensor.zz_liters') | float(default=1) / 12178.933688297 * 100 | round(2)  %}
           {{ '{:.1f}'.format(value) }}
+
+      - name: "heatpump_eltako_electric_power"
+        unit_of_measurement: "W"
+        device_class: power
+        unique_id: “0412664564”
+        state: >
+          {% set eltako_power = states('sensor.ww_eltako_power') %}
+          {{ (eltako_power -180 ) * 0.64655 }}

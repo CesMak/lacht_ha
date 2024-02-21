@@ -1,5 +1,5 @@
 # Heatpump
-   * [Setup Weißhaupt indor unit](#setup-weißhaupt-indor-unit)
+   * [Setup Weißhaupt indoor unit](#setup-weißhaupt-indor-unit)
    * [Setup Home assistant](#setup-home-assistant)
    * [Modbus configuration](#modbus-configuration)
 
@@ -7,14 +7,14 @@
 
 Here I share how to integrate a **Weißhaupt Split-HeatPump** (Weißhaupt Split-Wärmepumpe) into the Home Assistnat. My *.yaml files work perfectly for the **WWP-LS-10-BR** however also for the Biblock etc. you can try my work (it might be however that you do have some other parameters availalbe this also depends on your WWP-CPU Version). My work is inspired by [this forum](https://community.home-assistant.io/t/weishaupt-heatpump-integration-via-modbus/436823/144)
 
-## Setup Weißhaupt indor unit
+## Setup Weißhaupt indoor unit
 * Weißhaupt WWP LS 10 BR
 * Version WWP-SG V3.0 (see under: )
 * Version WWP-CPU V5.2 (see under: )
-* in order to use Modbus TCP you need version >=4
+* in order to use Modbus TCP you need WWP-CPU >=4
 * in other versions you do not have the Modubs TCP tile:
 ![alt text](doc/setup.png)
-* connect the LAN / Modbus connection to your indoor unit
+* connect the cable LAN / Modbus to your indoor unit
 * setup TCP connection as above (you can choose another ip as well but make sure to be consistent)
 * on your router (fritz box) activate port 502 (Portfreigabe) for your Weißhaupt heatpump it should be named *WWP-CPU-....*.
 * For a basic connection test try to ping to your ip:
@@ -45,7 +45,7 @@ Here I explain only how to do it using HA.
     + *[secrets.yaml](code/secrets.yaml)* create this file if it does not exist.
     + *[integrations/modbus_heatpump.yaml](code/modbus_heatpump.yaml)*
     + *[integrations/templates_heatpump.yaml](code/templates_heatpump.yaml)*
-    + *[automations.yaml](code/automations.yaml)
+    + *[automations.yaml](code/automations.yaml)*
 * in HA -> overview -> edit dashboard -> Raw configuration editor:
     + *[heatpump_dashboard.yaml](code/heatpump_dashboard.yaml)*
 * HA -> Settings -> (dots upper right) -> Restart (do a full restart!)
