@@ -93,10 +93,10 @@ template:
         {% set value = 0.001 if is_positive else - 0.001 %}
         {{ value | float(default=0.001) }}
 
-    - name: "heat_pump_electric_power"
+    - name: "heat_pump_actual_electric_power"
       unit_of_measurement: "W"
       device_class: power
-      unique_id: “0412660815061367648539”
+      unique_id: “041266081506136764859”
       state: >
         {% set base_power = 0.017 + states('sensor.value_jitter_integration_fix') | float(default=0) + states('sensor.wp_leistungsanforderung') | float(default=0) * 0.0189 %}
         {% set additional_power = 0 %}
@@ -106,7 +106,7 @@ template:
         {% if states('sensor.wp_e2_status') == '1' %}
         {% set additional_power = additional_power + 3.5 %}
         {% endif %}
-        {{ (base_power + additional_power) * 1000}}
+        {{ (base_power + additional_power) * 1000 }}
 
     - name: "wp_fehler_txt" # source: https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83315301.pdf
       attributes:
@@ -327,3 +327,19 @@ template:
             {% else %}
               {{ states('sensor.wp_fehlercode')|int() }}: {{ state_attr('sensor.wp_fehlercode_text', 'errortext') }}
             {% endif %}
+
+utility_meter:
+  daily_energy:
+    source: sensor.heat_pump_actual_electric_power
+    name: heat_pump_electric_meter_day
+    cycle: daily
+    tariffs:
+      - peak
+      - offpeak
+  monthly_energy:
+    source: sensor.heat_pump_actual_electric_power
+    name: heat_pump_electric_meter_month
+    cycle: monthly
+    tariffs:
+      - peak
+      - offpeak

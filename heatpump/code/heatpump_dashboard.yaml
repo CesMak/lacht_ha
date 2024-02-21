@@ -160,7 +160,7 @@
               title: 2.Wärme Erzeuger
             - type: history-graph
               entities:
-                - entity: sensor.heat_pump_electric_power
+                - entity: sensor.heat_pump_actual_electric_power
                   name: heatpump electric power W
                 - entity: sensor.load_power
                   name: Haushaltsverbrauch

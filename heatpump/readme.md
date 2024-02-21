@@ -71,6 +71,19 @@ Settings -> automation
 the Warm water push automation should show up:
 
 ![alt text](doc/automations.png)
+
+**measuring the electric power of the heatpump**
+I use an Eltako power meter to measure the electric power (WW_eltako_power) consumed by the heatpump (Details under sesnsors section). Moreover I use the estimation of the heatpump electric power by rafdev (= heatpump_actual_electric_power).
+Displayed values:
+* Eltako measurements: WW_eltako_power (value not displayed in the night due to wifi)
+* Estimated heatpump electric power (by rafdev): heatpump_actual_electric_powers
+* total household consumption: load power (measured with pv inverter)
+
+![alt text](doc/heatpump_powers.png)
+
+![alt text](doc/heatpump_power.png)
+
+
 <!-- 
 ## TODO
 * Teste: 

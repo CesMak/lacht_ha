@@ -7,9 +7,10 @@ mqtt:
     - name: WW_eltako_power
       state_topic: "heatpump/power_consumption/power"
       unit_of_measurement: "W"
+      device_class: power
     #### ZISTERN related ####
     #{"Time":"2024-02-14T22:03:04","ANALOG":{"Range": 1755}}
-    - name: ZZ_range  # zistern range
+    - name: ZZ_range # zistern range
       state_topic: "tele/zisterne/SENSOR"
       value_template: "{{ value_json.ANALOG.Range }}"
       unit_of_measurement: "range"
