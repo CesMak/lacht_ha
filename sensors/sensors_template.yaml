@@ -33,5 +33,5 @@ template:
         device_class: power
         unique_id: “0412664564”
         state: >
-          {% set eltako_power = states('sensor.ww_eltako_power') %}
+          {% set eltako_power = states('sensor.ww_eltako_power') | float(default=1)  %}
           {{ (eltako_power -180 ) * 0.64655 }}

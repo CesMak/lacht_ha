@@ -36,10 +36,6 @@ rr = WWP.read_input_registers(42103, 1)
 ```
 
 ## Setup Home assistant
-With [Home Assistant](https://www.home-assistant.io/)(HA) you can display your heatpump data in a nice way. Besides that you can of course also use ioBroker, python scripts (see above), or other smart home software.
-Here I explain only how to do it using HA.
-* Download and install HA as docker or as full OS on a home server pc (that has to run full time!)
-* in HA: Settings Apps -> install *Studio Code Server* or *File editor*
 * open Studio Code Server and make sure your files look like mine:
     + *[configuration.yaml](code/configuration.yaml)*
     + *[secrets.yaml](code/secrets.yaml)* create this file if it does not exist.

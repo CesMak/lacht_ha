@@ -101,13 +101,20 @@ template:
         {% set base_power = 0.017 + states('sensor.value_jitter_integration_fix') | float(default=0) + states('sensor.wp_leistungsanforderung') | float(default=0) * 0.0189 %}
         {% set additional_power = 0 %}
         {% set my_custom_offset = 932 %}
+        {% set limit            = 22 %}
         {% if states('sensor.wp_e1_status') == '1' %}
         {% set additional_power = additional_power + 3.5 %}
         {% endif %}
         {% if states('sensor.wp_e2_status') == '1' %}
         {% set additional_power = additional_power + 3.5 %}
         {% endif %}
-        {{ (base_power + additional_power) * 1000 + my_custom_offset }}
+        {% if (base_power + additional_power) < 0.022 %}
+        {% set result           = 0 %}
+        {% else %}
+        {% set result = (base_power + additional_power) * 1000 + my_custom_offset  %}
+        {% endif %}
+        {{ result }}
+
 
     - name: "wp_fehler_txt" # source: https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83315301.pdf
       attributes:
