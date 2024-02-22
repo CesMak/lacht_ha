@@ -4,10 +4,10 @@ modbus:
     host: !secret heatpump_modbus_host_ip
     port: !secret heatpump_modbus_port
     climates:
-    # Warmwasser
+      # Warmwasser
       - name: "WP_Warmwasser" # WPWarmWasser_Normal
         slave: 1
-        address: 32102  #42103
+        address: 32102 #42103
         input_type: input
         max_temp: 65
         min_temp: 15
@@ -39,7 +39,7 @@ modbus:
         scale: 0.1
         offset: 0
         precision: 1
-        data_type: int16       
+        data_type: int16
       - name: WP_Fehlercode
         slave: 1
         address: 30003
@@ -55,7 +55,7 @@ modbus:
         scale: 1
         offset: 0
         precision: 0
-        data_type: int16     
+        data_type: int16
       - name: WP_Stoerungsfrei
         slave: 1
         address: 30005
@@ -63,7 +63,7 @@ modbus:
         scale: 1
         offset: 0
         precision: 0
-        data_type: int16           
+        data_type: int16
       - name: WP_Betrieb
         slave: 1
         address: 30006
@@ -108,7 +108,7 @@ modbus:
       #   offset: 0
       #   precision: 1
       #   data_type: int16
-      # - name: WP_RaumFeuchte # Fails shows -0.1 
+      # - name: WP_RaumFeuchte # Fails shows -0.1
       #   slave: 1
       #   address: 31103
       #   input_type: input
@@ -152,7 +152,7 @@ modbus:
       #   scale: 0.01
       #   offset: 0
       #   precision: 2
-      #   data_type: int16     
+      #   data_type: int16
       - name: WP_RaumSollKomfort
         slave: 1
         address: 41105
@@ -182,7 +182,7 @@ modbus:
         scale: 0.1
         offset: 0
         precision: 1
-        data_type: int16                    
+        data_type: int16
       # - name: WP_Heizkurve # missconfigured!
       #   slave: 1
       #   address: 41108
@@ -227,7 +227,7 @@ modbus:
       #   scale: 0.01
       #   offset: 0
       #   precision: 2
-      #   data_type: int16      
+      #   data_type: int16
       #Warmwasser
       - name: WP_Warmwassersolltemperatur
         slave: 1
@@ -259,7 +259,7 @@ modbus:
       #   scale: 0.01
       #   offset: 0
       #   precision: 2
-      #   data_type: int16   
+      #   data_type: int16
       - name: "WP_WarmwasserPush" #0=Aus, 5....240MIN
         slave: 1
         address: 42102
@@ -297,7 +297,7 @@ modbus:
       #   scale: 1
       #   offset: 0
       #   precision: 1
-      #   data_type: int16     
+      #   data_type: int16
       # 33102 stoermeldung -> not yet used
       - name: WP_Leistungsanforderung
         slave: 1
@@ -458,7 +458,7 @@ modbus:
         slave: 1
         address: 34102
         input_type: input
-        state_class: measurement        
+        state_class: measurement
         scale: 1
         offset: 0
         precision: 0
@@ -467,7 +467,7 @@ modbus:
         slave: 1
         address: 34103
         input_type: input
-        state_class: measurement    
+        state_class: measurement
         scale: 1
         offset: 0
         precision: 0
@@ -508,7 +508,7 @@ modbus:
         offset: 0
         precision: 0
         data_type: int16
-      # 44101 - 44106 
+      # 44101 - 44106
       # Eingaenge 35101 - 35108, 45101 - 45108
       #Stats
       - name: WPST_Gesamt_Tag

@@ -1,0 +1,352 @@
+template:
+  sensor:
+    - name: "wp_betrieb_txt"
+      state: >-
+        {% set value = states('sensor.wp_betrieb')|int() %}
+        {% if value == 0 %}{% set modus = 'undefiniert' %}
+        {% elif value ==  1 %}{% set modus = 'Relaistest' %}
+        {% elif value == 2 %}{% set modus = 'Notaus' %}
+        {% elif value == 3 %}{% set modus = 'Diagnose' %}
+        {% elif value == 4 %}{% set modus = 'Handbetrieb' %}
+        {% elif value == 5 %}{% set modus = 'Handbetrieb_Heizen' %}
+        {% elif value == 6 %}{% set modus = 'Handbetrieb_Kühlen' %}
+        {% elif value == 7 %}{% set modus = 'Manueller_Abtaubetrieb' %}
+        {% elif value == 8 %}{% set modus = 'Abtauen' %}
+        {% elif value == 9 %}{% set modus = 'WEZ2' %}
+        {% elif value == 10 %}{% set modus = 'EVU_Sperre' %}
+        {% elif value == 11 %}{% set modus = 'SG_tarif' %}
+        {% elif value == 12 %}{% set modus = 'SG_maximal' %}
+        {% elif value == 13 %}{% set modus = 'Tarifladung' %}
+        {% elif value == 14 %}{% set modus = 'Erhöhterbetrieb' %}
+        {% elif value == 15 %}{% set modus = 'Standzeit' %}
+        {% elif value == 16 %}{% set modus = 'Standbybetrieb' %}
+        {% elif value == 17 %}{% set modus = 'Spülbetrieb' %}
+        {% elif value == 18 %}{% set modus = 'Frostschutz' %}
+        {% elif value == 19 %}{% set modus = 'Heizbetrieb' %}
+        {% elif value == 20 %}{% set modus = 'Warmwasserbetrieb' %}
+        {% elif value == 21 %}{% set modus = 'Legionellenschutz' %}
+        {% elif value == 22 %}{% set modus = 'Umschaltung_HZ_KU' %}
+        {% elif value == 23 %}{% set modus = 'Kühlbetrieb' %}
+        {% elif value == 24 %}{% set modus = 'Passive_Kühlung' %}
+        {% elif value == 25 %}{% set modus = 'Sommerbetrieb' %}
+        {% elif value == 26 %}{% set modus = 'Schwimmbad' %}
+        {% elif value == 27 %}{% set modus = 'Urlaub' %}
+        {% elif value == 28 %}{% set modus = 'Estrich' %}
+        {% elif value == 29 %}{% set modus = 'Gesperrt' %}
+        {% elif value == 31 %}{% set modus = 'Sperre_AT' %}
+        {% elif value == 31 %}{% set modus = 'Sperre_Sommer' %}
+        {% elif value == 32 %}{% set modus = 'Sperre_Winter' %}
+        {% elif value == 33 %}{% set modus = 'Einsatzgrenze' %}
+        {% elif value == 34 %}{% set modus = 'HK_Sperre' %}
+        {% elif value == 35 %}{% set modus = 'Absenk' %}
+        {% else %}{% set modus = 'undefiniert' %}
+        {% endif %}
+        {{ modus }}
+
+    - name: "wp_heizkreis_betriebsart_txt" #41103
+      state: >-
+        {% set value = states('sensor.WP_Heizkreis_Betriebsart')|int() %}
+        {% if value == 0 %}{% set modus = 'Automatik' %}
+        {% elif value ==  1 %}{% set modus = 'Komfort' %}
+        {% elif value == 2 %}{% set modus = 'Normal' %}
+        {% elif value == 3 %}{% set modus = 'Abesenkbetrieb' %}
+        {% elif value == 4 %}{% set modus = 'Standby' %}
+        {% else %}{% set modus = 'undefiniert' %}
+        {% endif %}
+        {{ modus }}
+
+    - name: "wp_systembetriebsart_txt" #40001
+      state: >-
+        {% set value = states('sensor.wp_systembetriebsart')|int() %}
+        {% if value == 0 %}{% set modus = 'Automatik' %}
+        {% elif value ==  1 %}{% set modus = 'Heizen' %}
+        {% elif value == 2 %}{% set modus = 'Kühlen' %}
+        {% elif value == 3 %}{% set modus = 'Sommer' %}
+        {% elif value == 4 %}{% set modus = 'Standby' %}
+        {% elif value == 5 %}{% set modus = '2. WEZ' %}
+        {% else %}{% set modus = 'undefiniert' %}
+        {% endif %}
+        {{ modus }}
+
+    - name: "wp_stoerung_txt"
+      state: >
+        {% if is_state('sensor.wp_stoerungsfrei', '1') %}
+          keine Störung
+        {% elif is_state('sensor.wp_betrieb', '0') %}
+          Störung
+        {% else %}
+          ERROR           
+        {% endif %}
+
+    # - name: "wpst_jaz_tag"
+    #   state: >
+    #     {{ (float(states('sensor.WPST_Gesamt_Tag')) / float(states('sensor.WPST_Heizen_Tag')))|round(2) }}
+
+    # - name: "wpst_jaz_monat"
+    #   state: >
+    #     {{ (float(states('sensor.WPST_Gesamt_Monat')) / float(states('sensor.WPST_Heizen_Monat')))|round(2) }}
+
+    - name: "value_jitter_integration_fix" # regarding correct power consumption measurements: see @rafdev in https://community.home-assistant.io/t/weishaupt-heatpump-integration-via-modbus/436823
+      state: >
+        {% set minutes = (now().hour * 60) + now().minute %}
+        {% set is_positive = (minutes // 10) % 2 == 0 %}
+        {% set value = 0.001 if is_positive else - 0.001 %}
+        {{ value | float(default=0.001) }}
+
+    - name: "heat_pump_estimated_electric_power"
+      unit_of_measurement: "W"
+      device_class: power
+      unique_id: “041266081506136764859”
+      state: >
+        {% set base_power = 0.017 + states('sensor.value_jitter_integration_fix') | float(default=0) + states('sensor.wp_leistungsanforderung') | float(default=0) * 0.0189 %}
+        {% set additional_power = 0 %}
+        {% set my_custom_offset = 932 %}
+        {% set limit            = 22 %}
+        {% if states('sensor.wp_e1_status') == '1' %}
+        {% set additional_power = additional_power + 3.5 %}
+        {% endif %}
+        {% if states('sensor.wp_e2_status') == '1' %}
+        {% set additional_power = additional_power + 3.5 %}
+        {% endif %}
+        {% if (base_power + additional_power) < 0.022 %}
+        {% set result           = 0 %}
+        {% else %}
+        {% set result = (base_power + additional_power) * 1000 + my_custom_offset  %}
+        {% endif %}
+        {{ result }}
+
+    - name: "wp_fehler_txt" # source: https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83315301.pdf
+      attributes:
+        errornumber: "{{ states('sensor.wp_fehlercode') | int }}"
+        errortext: >
+          {% set value = states('sensor.wp_fehlercode')|int() %}
+          {% if value == 65535 %}{% set errortext = 'kein Fehler' %}
+          {% elif value == 1 %}{% set errortext = 'Kältemittelfühler Expansionsventil Eintritt (T1)' %}
+          {% elif value == 2 %}{% set errortext = 'Luftansaugfühler (T2)' %}
+          {% elif value == 3 %}{% set errortext = 'Wärmetauscherfühler AG Austritt (T3)' %}
+          {% elif value == 4 %}{% set errortext = 'Verdichtersauggasfühler (T4)' %}
+          {% elif value == 5 %}{% set errortext = 'EVI-Sauggasfühler (T5)' %}
+          {% elif value == 6 %}{% set errortext = 'Kältemittelfühler IG Austritt (T6)' %}
+          {% elif value == 7 %}{% set errortext = 'Ölsumpffühler (T7)' %}
+          {% elif value == 8 %}{% set errortext = 'Expansionsventil EVI' %}
+          {% elif value == 9 %}{% set errortext = 'Niederdrucksensor (P1)' %}
+          {% elif value == 10 %}{% set errortext = 'Hochdrucksensor (P2)' %}
+          {% elif value == 11 %}{% set errortext = 'Mitteldrucksensor (P3)' %}
+          {% elif value == 12 %}{% set errortext = 'Expansionsventil Kühlen defekt' %}
+          {% elif value == 13 %}{% set errortext = 'keine Kommunikation zum Inverter' %}
+          {% elif value == 14 %}{% set errortext = 'keine Kommunikation zum Außengerät' %}
+          {% elif value == 15 %}{% set errortext = 'Hochdruckschalter hat ausgelöst' %}
+          {% elif value == 16 %}{% set errortext = 'Inverter gesperrt, da in den letzten 10 Stunden 10 Fehler aufgetreten sind' %}
+          {% elif value == 17 %}{% set errortext = 'EEPROM Speicher-Fehler' %}
+          {% elif value == 18 %}{% set errortext = 'keine Modbus-Kommunikation zwischen Regler EC und Steuerplatine Kältesatz' %}
+          {% elif value == 19 %}{% set errortext = 'durch Inverter-Alarm Wärmepumpe abgeschaltet' %}
+          {% elif value == 20 %}{% set errortext = 'Verdichter passt nicht zur Konfiguration' %}
+          {% elif value == 21 %}{% set errortext = 'Niederdruck-Störung' %}
+          {% elif value == 22 %}{% set errortext = 'zu geringe Überhitzung' %}
+          {% elif value == 23 %}{% set errortext = 'zu hohe Überhitzung' %}
+          {% elif value == 24 %}{% set errortext = 'EVI zu hohe Überhitzung' %}
+          {% elif value == 25 %}{% set errortext = 'Kältemittelmenge zu niedrig' %}
+          {% elif value == 26 %}{% set errortext = 'Hochdruck-Störung' %}
+          {% elif value == 27 %}{% set errortext = 'Kondensationstemperatur zu niedrig' %}
+          {% elif value == 28 %}{% set errortext = 'Kondensationstemperatur zu hoch' %}
+          {% elif value == 29 %}{% set errortext = 'Verdampfungstemperatur zu niedrig' %}
+          {% elif value == 30 %}{% set errortext = 'Verdampfungstemperatur zu hoch' %}
+          {% elif value == 32 %}{% set errortext = 'Wärmepumpe nicht kompatibel' %}
+          {% elif value == 33 %}{% set errortext = 'Regler EC hat keine Verbindung zum Erweiterungsmodul EM-HK' %}
+          {% elif value == 40 %}{% set errortext = 'Volumenstrom zu gering' %}
+          {% elif value == 41 %}{% set errortext = 'Spreizung LWT/Rücklauf negativ / Vierwegeventil schaltet nach dem Abtauen nicht zurück; nach 3 Warnungen verriegelt die Anlage)' %}
+          {% elif value == 43 %}{% set errortext = 'Ventilator blockiert' %}
+          {% elif value == 44 %}{% set errortext = 'Drehzahl Ventilator zu niedrig' %}
+          {% elif value == 47 %}{% set errortext = 'Kommunikation Regler EC zu Steuerplatine Kältesatz fehlerhaft' %}
+          {% elif value == 50 %}{% set errortext = 'Außenfühler (B1) unterbrochen' %}
+          {% elif value == 51 %}{% set errortext = 'Außenfühler (B1) kurzgeschlossen' %}
+          {% elif value == 52 %}{% set errortext = 'Weichenfühler (B2) unterbrochen' %}
+          {% elif value == 53 %}{% set errortext = 'Weichenfühler (B2) kurzgeschlossen' %}
+          {% elif value == 54 %}{% set errortext = 'Warmwasserfühler (B3) unterbrochen' %}
+          {% elif value == 55 %}{% set errortext = 'Warmwasserfühler (B3) kurzgeschlossen' %}
+          {% elif value == 56 %}{% set errortext = 'Vorlauffühler Verflüssiger (B4) unterbrochen' %}
+          {% elif value == 57 %}{% set errortext = 'Vorlauffühler Verflüssiger (B4) kurzgeschlossen' %}
+          {% elif value == 58 %}{% set errortext = 'Vorlauffühler (B7) unterbrochen' %}
+          {% elif value == 59 %}{% set errortext = 'Vorlauffühler (B7) kurzgeschlossen' %}
+          {% elif value == 60 %}{% set errortext = 'Rücklauffühler (B9) unterbrochen' %}
+          {% elif value == 61 %}{% set errortext = 'Rücklauffühler (B9) kurzgeschlossen' %}
+          {% elif value == 64 %}{% set errortext = 'Pufferfühler (B11) unterbrochen' %}
+          {% elif value == 65 %}{% set errortext = 'Pufferfühler (B11) kurzgeschlossen' %}
+          {% elif value == 66 %}{% set errortext = 'Mischerfühler regenerativ (B2.1) unterbrochen' %}
+          {% elif value == 67 %}{% set errortext = 'Mischerfühler regenerativ (B2.1) kurzgeschlossen' %}
+          {% elif value == 70 %}{% set errortext = 'Vorlauffühler Zweiter Heizkreis (B6.2) unterbrochen' %}
+          {% elif value == 71 %}{% set errortext = 'Vorlauffühler Zweiter Heizkreis (B6.2) kurzgeschlossen' %}
+          {% elif value == 72 %}{% set errortext = 'Fühler (T1.2) unterbrochen' %}
+          {% elif value == 73 %}{% set errortext = 'Fühler (T1.2) kurzgeschlossen' %}
+          {% elif value == 74 %}{% set errortext = 'Fühler (T2.2) unterbrochen' %}
+          {% elif value == 75 %}{% set errortext = 'Fühler (T2.2) kurzgeschlossen' %}
+          {% elif value == 90 %}{% set errortext = 'Analogeingang AE1 unterbrochen' %}
+          {% elif value == 91 %}{% set errortext = 'Analogeingang AE1 kurzgeschlossen' %}
+          {% elif value == 92 %}{% set errortext = 'Analogeingang AE2 unterbrochen' %}
+          {% elif value == 93 %}{% set errortext = 'Analogeingang AE2 kurzgeschlossen' %}
+          {% elif value == 94 %}{% set errortext = 'Analogeingang AE3 unterbrochen' %}
+          {% elif value == 95 %}{% set errortext = 'Analogeingang AE3 kurzgeschlossen' %}
+          {% elif value == 101 %}{% set errortext = 'Wärmepumpe wird außerhalb der Einsatzgrenzen betrieben' %}
+          {% elif value == 102 %}{% set errortext = 'maximale Abtauzeit überschritten' %}
+          {% elif value == 103 %}{% set errortext = 'Kommunikation Kältekreis fehlerhaft' %}
+          {% elif value == 104 %}{% set errortext = 'Druckgastemperatur zu hoch' %}
+          {% elif value == 105 %}{% set errortext = 'Stromaufnahme vom Inverter zu hoch' %}
+          {% elif value == 106 %}{% set errortext = 'Stromaufnahme zu hoch' %}
+          {% elif value == 107 %}{% set errortext = 'Gleichspannung am Inverter zu hoch' %}
+          {% elif value == 108 %}{% set errortext = 'Gleichspannung am Inverter zu niedrig' %}
+          {% elif value == 109 %}{% set errortext = 'Wärmepumpe wird außerhalb vom zulässigen Spannungsbereich betrieben' %}
+          {% elif value == 110 %}{% set errortext = 'Wärmepumpe wird außerhalb vom zulässigen Spannungsbereich betrieben' %}
+          {% elif value == 111 %}{% set errortext = 'Hochdruckschalter hat ausgelöst' %}
+          {% elif value == 112 %}{% set errortext = 'Inverter ist überhitzt' %}
+          {% elif value == 113 %}{% set errortext = 'Inverter ist überhitzt' %}
+          {% elif value == 114 %}{% set errortext = 'Stellung vom Verdichtermotor kann nicht bestimmt werden' %}
+          {% elif value == 117 %}{% set errortext = 'Gleichspannung am Inverter zu niedrig' %}
+          {% elif value == 118 %}{% set errortext = 'Strom zwischen Inverter und Verdichter ist zu hoch' %}
+          {% elif value == 119 %}{% set errortext = 'Stromaufnahme vom Verdichter zu hoch Zeitüberschreitung' %}
+          {% elif value == 120 %}{% set errortext = 'Invertertemperatur zu hoch' %}
+          {% elif value == 121 %}{% set errortext = 'Spannung am Inverter zu gering' %}
+          {% elif value == 122 %}{% set errortext = 'Modbus-Konfigurationsfehler' %}
+          {% elif value == 123 %}{% set errortext = 'keine Modbus-Verbindung' %}
+          {% elif value == 124 %}{% set errortext = 'Druckgastemperatur zu hoch' %}
+          {% elif value == 127 %}{% set errortext = 'Invertertemperatur zu hoch' %}
+          {% elif value == 128 %}{% set errortext = 'Inverter ist überhitzt' %}
+          {% elif value == 129 %}{% set errortext = 'Modbus-Kommunikation fehlerhaft' %}
+          {% elif value == 130 %}{% set errortext = 'Modbus-Kommunikation fehlerhaft' %}
+          {% elif value == 133 %}{% set errortext = 'Elektronikfehler' %}
+          {% elif value == 135 %}{% set errortext = 'Hochdruckschalter defekt' %}
+          {% elif value == 136 %}{% set errortext = 'Verdichter passt nicht zur Konfiguration' %}
+          {% elif value == 137 %}{% set errortext = 'Hochdruckschalter passt nicht zur Konfiguration' %}
+          {% elif value == 140 %}{% set errortext = 'Druckgastemperatur zu niedrig' %}
+          {% elif value == 143 %}{% set errortext = 'Invertertemperatur zu niedrig' %}
+          {% elif value == 144 %}{% set errortext = 'Drosselspulentemperatur zu niedrig' %}
+          {% else %}{% set errortext = 'undefiniert' %}
+          {% endif %}
+          {{ errortext }}
+
+        troubleshooting: >
+          {% set value = states('sensor.wp_fehlercode')|int() %}
+          {% if value == 65535 %}{% set troubleshooting = '' %}
+          {% elif value == 1 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 2 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 3 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 4 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 5 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 6 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 7 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 8 %}{% set troubleshooting = 'Leitung prüfen, ggf. austauschen. Ggf. defektes Expansionsventil austauschen.' %}
+          {% elif value == 9 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 10 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 11 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 12 %}{% set troubleshooting = 'Leitung prüfen, ggf. austauschen. Expansionsventil austauschen.' %}
+          {% elif value == 13 %}{% set troubleshooting = 'Lastspannung am Verdichter und Inverter prüfen. & Verbindungsleitung Steuerplatine Kältesatz zu Inverter prüfen. & Ggf. defekte Steuerplatine Kältesatz austauschen.' %}
+          {% elif value == 14 %}{% set troubleshooting = 'Verbindungsleitung zum Außengerät prüfen.' %}
+          {% elif value == 15 %}{% set troubleshooting = 'Drücke im Kältekreis kontrollieren. Volumenstrom prüfen. & Verdrahtung prüfen. & Sicherstellen, dass die Einsatzgrenzen der Wärmepumpe eingehalten werden. & Kältekreis prüfen.' %}
+          {% elif value == 16 %}{% set troubleshooting = 'Spannungsversorgung mindestens 10 Minuten unterbrechen. Bei wiederholtem Auftreten Weishaupt-Kundendienst benachrichtigen.' %}"
+          {% elif value == 17 %}{% set troubleshooting = 'Spannungsversorgung mindestens 10 Minuten unterbrechen.' %}
+          {% elif value == 18 %}{% set troubleshooting = 'Modbus-Verbindung prüfen.' %}
+          {% elif value == 19 %}{% set troubleshooting = 'Bei wiederholtem Auftreten Weishaupt-Kundendienst benachrichtigen.' %}
+          {% elif value == 20 %}{% set troubleshooting = 'Verdichtertyp prüfen. & Spannungsversorgung mindestens 10 Minuten unterbrechen.' %}
+          {% elif value == 21 %}{% set troubleshooting = 'Verdampfer auf Eisfreiheit prüfen. Funktion Ventilator prüfen. & Niederdrucksensor (P1) prüfen. Kältekreis prüfen.' %}
+          {% elif value == 22 %}{% set troubleshooting = 'Wenn der Fehler wiederholt auftritt: Überhitzung prüfen. & Verdichtersauggasfühler (T4) prüfen. Niederdrucksensor (P1) prüfen. & Antrieb Expansionsventil prüfen. Kältekreis prüfen.' %}
+          {% elif value == 23 %}{% set troubleshooting = 'Wenn der Fehler wiederholt auftritt: Überhitzung prüfen. & Verdichtersauggasfühler (T4) prüfen. Niederdrucksensor (P1) prüfen. & Antrieb Expansionsventil prüfen. Kältekreis prüfen.' %}
+          {% elif value == 24 %}{% set troubleshooting = 'Wenn der Fehler wiederholt auftritt: Kältekreis prüfen. & Lecksuche durchführen.' %}
+          {% elif value == 25 %}{% set troubleshooting = 'Wenn der Fehler wiederholt auftritt: Kältekreis prüfen. & Lecksuche durchführen.' %}
+          {% elif value == 26 %}{% set troubleshooting = 'Wärmeabnahme prüfen. & Hohe Warmwasser-Solltemperaturen vermeiden. & Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird. & Einstellung Überströmventil prüfen.' %}
+          {% elif value == 27 %}{% set troubleshooting = 'Der erwartete Betriebszustand wird bei hoher Außentemperatur und geringer Vorlauftemperatur nicht erreichen. & Anlage mit 2. Wärmeerzeuger hochheizen.' %}
+          {% elif value == 28 %}{% set troubleshooting = 'Wärmeabnahme prüfen. Einstellung Überströmventil prüfen. Heizwasser-Volumenstrom prüfen.' %}
+          {% elif value == 29 %}{% set troubleshooting = 'Verdampfer auf Eisfreiheit prüfen. Funktion Ventilator prüfen. & Kältekreis prüfen.' %}
+          {% elif value == 30 %}{% set troubleshooting = 'Die Einsatzgrenze der Wärmepumpe wurde überschritten. & Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird.' %}
+          {% elif value == 32 %}{% set troubleshooting = 'Spannungsversorgung Verdichter prüfen. Spannungsversorgung von den Klemmen zum Kältesatz prüfen. & Weishaupt-Kundendienst benachrichtigen.' %}
+          {% elif value == 33 %}{% set troubleshooting = 'Verbindungsleitung zwischen Regler und Erweiterungsmodul prüfen.' %}
+          {% elif value == 40 %}{% set troubleshooting = 'Mindestvolumenstrom beachten [Kap. 3.4.6]. Volumenstrom prüfen, ggf. erhöhen. & Leitung Volumenstromsensor (B10) prüfen. Volumenstromsensor (B10) prüfen, ggf. austauschen.' %}
+          {% elif value == 41 %}{% set troubleshooting = 'Volumenstrom anpassen. Pumpenleistung reduzieren. Vierwegeventil prüfen. & Ggf. Funktion deaktivieren.' %}
+          {% elif value == 43 %}{% set troubleshooting = 'Verdampfer auf Eisfreiheit prüfen. Funktion Ventilator prüfen.' %}
+          {% elif value == 44 %}{% set troubleshooting = 'Verdampfer auf Eisfreiheit prüfen. Funktion Ventilator prüfen.' %}
+          {% elif value == 47 %}{% set troubleshooting = 'Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 50 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 51 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 52 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 53 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 54 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 55 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 56 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 57 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 58 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 59 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 60 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 61 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 64 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 65 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 66 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 67 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 70 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 71 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 72 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 73 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 74 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 75 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 90 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 91 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 92 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 93 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 94 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 95 %}{% set troubleshooting = 'Fühler und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 101 %}{% set troubleshooting = 'Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird, siehe W 26 bis W 30.' %}
+          {% elif value == 102 %}{% set troubleshooting = 'Bei exponiertem Aufstellungsort kann starker Wind zu dieser Warnung führen. Nach der Abtauung Verdampfer auf Eisfreiheit prüfen.' %}
+          {% elif value == 103 %}{% set troubleshooting = 'Spannungsversorgung mindestens 10 Minuten unterbrechen. Bei wiederholtem Auftreten Weishaupt-Kundendienst benachrichtigen.' %}
+          {% elif value == 104 %}{% set troubleshooting = 'Wärmeabnahme prüfen. Kältekreis prüfen.' %}
+          {% elif value == 105 %}{% set troubleshooting = 'Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird. & Verdichteranschluss am Inverter prüfen.' %}
+          {% elif value == 106 %}{% set troubleshooting = 'Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird. & Spannungsversorgung prüfen (Netzspannung zu gering). & Drosselspulen in der 400 V Zuleitung zum Inverter prüfen.' %}
+          {% elif value == 107 %}{% set troubleshooting = 'Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird. & Spannungsversorgung prüfen.' %}
+          {% elif value == 108 %}{% set troubleshooting = 'Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird. & Spannungsversorgung prüfen.' %}
+          {% elif value == 109 %}{% set troubleshooting = 'Spannungsversorgung prüfen.' %}
+          {% elif value == 110 %}{% set troubleshooting = 'Spannungsversorgung prüfen.' %}
+          {% elif value == 111 %}{% set troubleshooting = 'Wärmeabnahme prüfen. & Einstellung vom Überströmventil prüfen. Stellung der Kugelhähne am Innenund Außengerät prüfen. & Drücke im Kältekreis kontrollieren. Volumenstrom kontrollieren. & Verdrahtung prüfen. & Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird. & Kältekreis prüfen.' %}
+          {% elif value == 112 %}{% set troubleshooting = 'Sicherstellen, dass: die Montagebedingungen für das Innengerät eingehalten werden & die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird & Weishaupt-Kundendienst benachrichtigen (Version der Steuerplatine Kältesatz RCC Modbus prüfen).' %}
+          {% elif value == 113 %}{% set troubleshooting = 'Sicherstellen, dass: die Montagebedingungen für das Innengerät eingehalten werden & die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird & Weishaupt-Kundendienst benachrichtigen (Version der Steuerplatine Kältesatz RCC Modbus prüfen).' %}
+          {% elif value == 114 %}{% set troubleshooting = 'Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird. & Verdichteranschluss am Inverter prüfen.' %}
+          {% elif value == 117 %}{% set troubleshooting = 'Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird. & Spannungsversorgung prüfen.' %}
+          {% elif value == 118 %}{% set troubleshooting = 'Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird. & Verdichteranschluss am Inverter prüfen. Verdichter-Wicklungswiderstände messen.' %}
+          {% elif value == 119 %}{% set troubleshooting = 'Sicherstellen, dass die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird. & Verdichteranschluss am Inverter prüfen. Verdichter-Wicklungswiderstände messen.' %}
+          {% elif value == 120 %}{% set troubleshooting = 'Sicherstellen, dass: die Montagebedingungen für das Innengerät eingehalten werden & die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird' %}
+          {% elif value == 121 %}{% set troubleshooting = 'Spannung nach den Drosselspulen messen.' %}
+          {% elif value == 122 %}{% set troubleshooting = 'Spannungsversorgung mindestens 10 Minuten unterbrechen.' %}
+          {% elif value == 123 %}{% set troubleshooting = 'Modbus-Verbindung (Leitung und Stecker) zwischen Inverter und Steuerplatine Kältesatz prüfen. & Spannungsversorgung mindestens 10 Minuten unterbrechen.' %}
+          {% elif value == 124 %}{% set troubleshooting = 'Wärmeabnahme prüfen. Kältekreis prüfen.' %}
+          {% elif value == 127 %}{% set troubleshooting = 'Sicherstellen, dass: die Montagebedingungen für das Innengerät eingehalten werden & die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird' %}
+          {% elif value == 128 %}{% set troubleshooting = 'Sicherstellen, dass: die Montagebedingungen für das Innengerät eingehalten werden & die Wärmepumpe innerhalb der Einsatzgrenzen betrieben wird & Weishaupt-Kundendienst benachrichtigen (Version der Steuerplatine Kältesatz RCC Modbus prüfen).' %}
+          {% elif value == 129 %}{% set troubleshooting = 'Modbus-Verbindung zwischen Inverter und Steuerplatine Kältesatz prüfen (Leitung und Stecker). & Spannungsversorgung mindestens 10 Minuten unterbrechen.' %}
+          {% elif value == 130 %}{% set troubleshooting = 'Modbus-Verbindung zwischen Inverter und Steuerplatine Kältesatz prüfen (Leitung und Stecker). & Spannungsversorgung mindestens 10 Minuten unterbrechen.' %}
+          {% elif value == 133 %}{% set troubleshooting = 'Spannungsversorgung mindestens 10 Minuten unterbrechen.' %}
+          {% elif value == 135 %}{% set troubleshooting = 'Hochdruckschalter-Anschluss prüfen.' %}
+          {% elif value == 136 %}{% set troubleshooting = 'Verdichtertyp prüfen. & Spannungsversorgung mindestens 10 Minuten unterbrechen.' %}
+          {% elif value == 137 %}{% set troubleshooting = 'Hochdruckschalter prüfen. Spannungsversorgung mindestens 10 Minuten unterbrechen.' %}
+          {% elif value == 140 %}{% set troubleshooting = 'Druckgasfühler (DT) und Leitung prüfen, ggf. austauschen.' %}
+          {% elif value == 143 %}{% set troubleshooting = 'Kühlung am Inverter prüfen. Gerät neu starten.' %}
+          {% elif value == 144 %}{% set troubleshooting = 'Sicherstellen, dass die Montagebedingungen für das Innengerät eingehalten werden.' %}
+          {% else %}{% set troubleshooting = 'undefiniert' %}
+          {% endif %}
+          {{ troubleshooting }}
+      state: >
+        {% set value = states('sensor.wp_fehlercode')|int() %}
+        {% if value == 65535 %}
+          {{ "Kein Fehler"}}
+        {% else %}
+          {{ states('sensor.wp_fehlercode')|int() }}: {{ state_attr('sensor.wp_fehlercode_text', 'errortext') }}
+        {% endif %}
+
+utility_meter:
+  daily_energy:
+    source: sensor.heat_pump_actual_electric_power
+    name: heat_pump_electric_meter_day
+    cycle: daily
+    tariffs:
+      - peak
+      - offpeak
+  monthly_energy:
+    source: sensor.heat_pump_actual_electric_power
+    name: heat_pump_electric_meter_month
+    cycle: monthly
+    tariffs:
+      - peak
+      - offpeak

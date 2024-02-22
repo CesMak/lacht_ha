@@ -6,3 +6,16 @@ eltako
 PV/
 __pycache__
 .vscode/
+backup
+
+config/.cloud
+config/.storage
+config/blueprints
+config/custom_components
+config/deps
+config/tts
+config/www
+config/.HA_VERSION
+config/*.db*
+config/*.log*
+config/secrets.yaml
