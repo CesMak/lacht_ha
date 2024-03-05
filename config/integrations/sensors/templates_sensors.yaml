@@ -31,5 +31,23 @@ template:
         unit_of_measurement: "W"
         device_class: power
         state: >
-          {% set eltako_power = states('sensor.ww_eltako_power') | float(default=1)  %}
-          {{ (eltako_power - 180 ) * 0.64655 }}
+          {% set p = states('sensor.ww_eltako_power') | float(default=1)  %}
+          {% if  p < 220 %}
+          {% set result           = 0 %}
+          {% else %}
+          {% set result = (p - 180 ) * 0.64655 - 270 %}
+          {% endif %}
+          {{ '{:.1f}'.format(result) }}
+      - name: "DHT_temperature_cellar_mean"
+        unit_of_measurement: °C
+        device_class: temperature
+        state: >
+          {% set t = states('sensor.dht_temperature1') %}
+          {% set p = states('sensor.dht_temperature2') %}
+          {% set r = (t+p)*0.5 %}
+          {{ r }}
+      - name: "DHT_humidity_cellar_mean"
+        unit_of_measurement: "%"
+        state: >
+          {% set res = (states('sensor.dht_humidity1') + states('sensor.dht_humidity2')) * 0.5 | float(default=1)  %}
+          {{ res }}

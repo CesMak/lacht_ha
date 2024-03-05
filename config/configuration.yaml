@@ -11,3 +11,40 @@ scene: !include scenes.yaml
 
 homeassistant:
   packages: !include_dir_named integrations
+
+# use yaml mode for dashboards!
+lovelace:
+  mode: yaml
+  # include tesla card etc.
+  resources:
+    - type: module
+      url: local/community/tesla-style-solar-power-card/tesla-style-solar-power-card.js
+    - type: module
+      url: local/community/lovelace-plotly-graph-card/plotly-graph-card.js
+    - type: module
+      url: local/community/mini-graph-card/mini-graph-card-bundle.js
+  dashboards:
+    lovelace-minimalist:
+      mode: yaml
+      title: PV
+      icon: mdi:script
+      show_in_sidebar: true
+      filename: views/pv_dashboard.yaml
+    lovelace-minimalist2:
+      mode: yaml
+      title: Heatpump
+      icon: mdi:script
+      show_in_sidebar: true
+      filename: views/heatpump_dashboard.yaml
+    lovelace-minimalist3:
+      mode: yaml
+      title: Sensors
+      icon: mdi:script
+      show_in_sidebar: true
+      filename: views/sensors_dashboard.yaml
+    # lovelace-me:
+    #   mode: yaml
+    #   title: Heatpump
+    #   icon: mdi:script
+    #   show_in_sidebar: true
+    #   filename: views/heatpump_dashboard.yaml

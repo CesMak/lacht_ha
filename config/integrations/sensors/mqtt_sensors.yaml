@@ -14,3 +14,20 @@ mqtt:
       state_topic: "tele/zisterne/SENSOR"
       value_template: "{{ value_json.ANALOG.Range }}"
       unit_of_measurement: "range"
+    #### DHT22 related ####
+    - name: DHT_temperature1
+      state_topic: "hygrometer/cellar_1/temperature"
+      unit_of_measurement: °C
+      state_class: measurement      
+      device_class: temperature
+    - name: DHT_temperature2
+      state_topic: "hygrometer/cellar_2/temperature"
+      unit_of_measurement: °C
+      state_class: measurement      
+      device_class: temperature
+    - name: DHT_humidity1
+      state_topic: "hygrometer/cellar_1/humidity"
+      unit_of_measurement: '%'
+    - name: DHT_humidity2
+      state_topic: "hygrometer/cellar_2/humidity"
+      unit_of_measurement: '%'

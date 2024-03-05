@@ -1,0 +1,18 @@
+yahoofinance:
+  include_post_values: true
+  include_pre_values: false
+  show_trending_icon: true
+  decimal_places: 2
+  scan_interval:
+    minutes: 1
+  symbols:
+    - symbol: TESLA
+      target_currency: EUR  
+    - symbol: APC.F
+      target_currency: EUR
+    - symbol: AMD.F
+      target_currency: EUR  
+    - symbol: AMZN
+      target_currency: EUR  
+    - symbol: MSFT
+      target_currency: EUR 
