@@ -68,6 +68,17 @@ the Warm water push automation should show up:
 
 ![alt text](doc/automations.png)
 
+In the transitional period (Übergangszeit) its very beneficial to increase the normal temperature (sollwert temperatur) during the day.
+The idea is that when it is warm outside and the your battery is full (in case you have a PV) to produce more heat and heat up your house.
+Your house should then store this heat during the night. Thereby your heatpump should not jump on during the night that often and you save a lot of costs.
+![alt text](doc/incerasing_normtemp.png)
+
+![alt text](doc/incerasing_normtemp2.png)
+
+![alt text](doc/incerasing_normtemp3.png)
+Here you can see that something bad happened during one night the outter temperature was decreasing and the target temperature was increasind during the night! this was energy consuming however on the other days it worked out well.
+![alt text](doc/incerasing_normtemp4.png)
+
 **measuring the electric power of the heatpump**
 I use an Eltako power meter to measure the electric power (WW_eltako_power) consumed by the heatpump (Details under sesnsors section). Moreover I use the estimation of the heatpump electric power by rafdev (= heatpump_actual_electric_power).
 Displayed values:
@@ -80,6 +91,9 @@ Displayed values:
 ![alt text](doc/heatpump_power.png)
 
 
+I adapted and scaled both the eltako and the estimated value and I still think the estimated value  is a lot better (not distorted) and also the graphical progression is a lot better.
+![alt text](imgs/adapted.png)
+![alt text](imgs/adapted2.png)
 <!-- 
 ## TODO
 * Teste: 
@@ -88,4 +102,25 @@ Displayed values:
 * Teste systembetriebsartChange aendern!  SystembetriebsartChange
 
 * save data to a db? how long is the data stored in HA? 
+
+
+
+
+    # - name: "wp_estimated_electric_power_adapted"
+    #   unit_of_measurement: "W"
+    #   device_class: power
+    #   state: >
+    #     {% set base_power = states('sensor.wp_estimated_electric_power') | float(default=0) %}
+    #     {% set my_custom_offset = 672 %}
+    #     {% set limit            = 22 %}
+    #     {% set result            = 22 %}
+    #     {{ result }}
+
+    # - platform: integration
+    #   source: sensor.wp_estimated_electric_power
+    #   name: wp_estimated_electric_power_day
+    #   unit_prefix: k
+    #   round: 2
+    #   unit_time: d
+
 -->

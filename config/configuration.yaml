@@ -42,9 +42,9 @@ lovelace:
       icon: mdi:script
       show_in_sidebar: true
       filename: views/sensors_dashboard.yaml
-    # lovelace-me:
-    #   mode: yaml
-    #   title: Heatpump
-    #   icon: mdi:script
-    #   show_in_sidebar: true
-    #   filename: views/heatpump_dashboard.yaml
+    lovelace-minimalist4:
+      mode: yaml
+      title: Stocks
+      icon: mdi:script
+      show_in_sidebar: true
+      filename: views/stocks_dashboard.yaml

@@ -167,9 +167,11 @@ views:
                 name: estimated no offset
             title: Elektrische Energie
             hours_to_show: 4
-          - type: history-graph
+          - type: entities
             entities:
-              - entity: sensor.wp_leistungsanforderung
-                name: Leistungsanforderung pumpe
-            title: Leistungsanforderung pumpe
-            hours_to_show: 4
+              - entity: sensor.wp_estimated_electric_power_kwh_hours
+                name: WP electic hours
+              - entity: sensor.wp_estimated_electric_power_kwh_days
+                name: WP electric days
+              - entity: sensor.wp_electric_meter
+                name: WP electric meter

@@ -29,15 +29,26 @@ views:
                     entity: sensor.daily_imported_energy
                     icon: mdi:transmission-tower-export
                   - type: entity
-                    entity: sensor.daily_imported_energy_cost
+                    name: Total savings
+                    entity: sensor.total_energy_savings
                     icon: mdi:cash
+                  - type: entity
+                    name: Meter-Sell 280
+                    entity: sensor.e_meter_export
+                    icon: mdi:transmission-tower-export
               - type: vertical-stack
                 cards:
                   - type: entity
                     entity: sensor.daily_exported_energy
                     icon: mdi:transmission-tower-import
                   - type: entity
-                    entity: sensor.daily_exported_energy_compensation
+                    name: Costs (06.2023)
+                    entity: sensor.total_energy_costs
+                    icon: mdi:cash
+                  - type: entity
+                    name: Buy ESY1163203507
+                    entity: sensor.e_meter_import
+                    icon: mdi:transmission-tower-import
       - type: entities
         entities:
           - entity: sensor.total_dc_power
@@ -84,13 +95,9 @@ views:
         type: statistics-graph
         card_mod:
           style: |
-            ha-card {
-              --graph-color-1: #406990;
-              --graph-color-2: #9f8309;
-              --graph-color-3: #ff7f00;
-              --graph-color-4: #6a6eae;
-              --graph-color-5: #b3e900;          
-              }
+            canvas {
+              max-height: 300px !important;
+            }
         entities:
           # same colors as in app, german
           - entity: sensor.total_dc_power

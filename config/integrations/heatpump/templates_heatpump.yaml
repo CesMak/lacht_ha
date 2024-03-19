@@ -109,19 +109,31 @@ template:
           {% if bb < 50 %}
           {% set res = 0 %}
           {% else %}
-          {% set res = bb + 970 %}
+          {% set res = bb + 650 %}
           {% endif %}
           {{ res }}
 
-      # das ist der WW zaehlerstand im Keller: 04.03.2024: 3766.25 kWh
-      - name: "wp_estimated_electric_power_kwh_offset"
-        unit_of_measurement: "W"
+      # das ist der WW zaehlerstand im Keller: 
+      # 04.03.2024: 3766.25 kWh
+      # 05.03.2024  3773.16 kWh
+      # 06.03.2024  3779.13 kWh      --- geschaetzt: 3786.9 
+      - name: "wp_electric_meter"
+        unit_of_measurement: "kwh"
         device_class: power
         state: >
-          {% set ba = states('sensor.wp_estimated_electric_power_kwh') | float(default=0) %}
-          {% set offset = 3766.25 %}
+          {% set ba = states('sensor.wp_estimated_electric_power_kwh_hours') | float(default=0) %}
+          {% set offset = 3755.00 %}
           {% set result = offset+ba %}
           {{ result }}
+
+      - name: "wpst_jaz_tag"
+        state: >
+          {{ (float(states('sensor.wp_estimated_electric_power_kwh_days')) / float(states('sensor.WPST_Heizen_Tag')))|round(2) }}
+
+# - name: "wpst_jaz_monat"
+#   state: >
+#     {{ (float(states('sensor.WPST_Gesamt_Monat')) / float(states('sensor.WPST_Heizen_Monat')))|round(2) }}
+
 
       - name: "wp_fehler_txt" # source: https://www.weishaupt.de/uploads/tx_weishaupt_documents/documents/83315301.pdf
         attributes:
@@ -342,6 +354,9 @@ template:
           {% else %}
             {{ states('sensor.wp_fehlercode')|int() }}: {{ state_attr('sensor.wp_fehlercode_text', 'errortext') }}
           {% endif %}
+
+
+
 
 # utility_meter:
 #   daily_energy:

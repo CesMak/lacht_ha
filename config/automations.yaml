@@ -2,6 +2,7 @@
 # Heatpump Automations
 # some automations: load warmwater every day at 14:00 for 30minutes
 - alias: "WP_Warmwasser_Load"
+  description: "dddd"
   trigger:
     - platform: time
       at: "14:00:00"
@@ -11,8 +12,61 @@
         hub: wpump
         address: 42102
         slave: 1
-        value: 30
+        value: 45
   mode: single
+  id: e455c68f8c944d24ab5ffd3fcfe38a71
+
+# - alias: "WP_SGR2_activate"
+#   trigger:
+#   - platform: event
+#     event_type: ''
+#     context:
+#       user_id:
+#       - eee7878a78864f8fb6dccacedef76c1f
+#   action:
+#     - service: modbus.write_register
+#       data:
+#         hub: wpump
+#         address: 45102
+#         slave: 1
+#         value: 2
+#   mode: single
+#   id: eff5c68f8c944d24ab5ffd3fcfe38a71
+
+# - alias: "WP_SGR2_deactivate"
+#   trigger:
+#   - platform: event
+#     event_type: ''
+#     context:
+#       user_id:
+#       - eee7878a78864f8fb6dccacedef76c1f
+#   action:
+#     - service: modbus.write_register
+#       data:
+#         hub: wpump
+#         address: 45102
+#         slave: 1
+#         value: 0
+#   mode: single
+#   id: eff5c5f8c944d24ab5ffd3fcfe38a71
+
+# SGR1(35101) offen, SGR2(35102) zu: erhöhrter Betrieb (2)
+# Zu der Vorlauftemerperatur im Heizbetrieb und der WarmwasserSolltemperatur wird die eingestellte SG Ready Anhebung aufaddiert.
+# TODO wert auf 2 oder auf 0 schalten?! fuer bspw. 10min?!
+
+# SG Ready Anhebung: 42105 - read write value
+#  Anhebung Warmwasser Solltemperatur                                 4K
+#  Vorlaufueberhoehung: -> WW soll temperatur + Vorlaufueberhoehung   7K
+#  Maximaltemperatur  : -> nur fuer Zwangsbetrieb SGR1 und SGR2 zu    60°
+
+
+  # trigger:
+  # - platform: event
+  #   event_type: ''
+  #   context:
+  #     user_id:
+  #     - eee7878a78864f8fb6dccacedef76c1f
+
 # - name: "SystembetriebsartChange"
 #   unique_id: wpump_mode
 #   state: "{{ states('sensor.wp_systembetriebsart_text') }}"

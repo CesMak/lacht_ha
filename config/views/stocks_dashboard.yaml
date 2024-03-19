@@ -1,0 +1,111 @@
+views:
+  - title: Eltako
+    icon: mdi:sun-compass
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: >-
+                  ## MSFT | Microsoft Corporation  
+
+                  &nbsp;&nbsp;<ha-icon icon="mdi:basket-outline"></ha-icon>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Buy at $200
+              - type: 'custom:mini-graph-card'
+                entities:
+                  - entity: sensor.yahoofinance_amzn
+                name: Amazon (Last 24 Hours)
+                font_size_header: 12
+                font_size: 90
+                hours_to_show: 24
+                hour24: true
+                points_per_hour: 12
+                line_width: 2
+                smoothing: false
+                show:
+                  labels: true
+                color_thresholds_transition: hard
+                color_thresholds:
+                  - value: 0
+                    color: '#4fc1ff'
+                  - value: 200
+                    color: orange
+              - type: 'custom:mini-graph-card'
+                entities:
+                  - entity: sensor.yahoofinance_msft
+                name: Microsoft Corporation (Last 7 Days)
+                font_size_header: 12
+                font_size: 90
+                hours_to_show: 168
+                hour24: true
+                points_per_hour: 4
+                line_width: 2
+                smoothing: false
+                show:
+                  icon: false
+                  extrema: true
+                  labels: false
+                color_thresholds_transition: hard
+                color_thresholds:
+                  - value: 0
+                    color: '#4fc1ff'
+                  - value: 200
+                    color: orange
+              - type: 'custom:mini-graph-card'
+                entities:
+                  - entity: sensor.yahoofinance_tesla
+                name: Tesla (Last 24 Hours)
+                font_size_header: 12
+                font_size: 90
+                hours_to_show: 24
+                hour24: true
+                points_per_hour: 12
+                line_width: 2
+                smoothing: false
+                show:
+                  labels: true
+                color_thresholds_transition: hard
+                color_thresholds:
+                  - value: 0
+                    color: '#4fc1ff'
+                  - value: 200
+                    color: orange
+              - type: 'custom:mini-graph-card'
+                entities:
+                  - entity: sensor.yahoofinance_apc_f
+                name: Apple FRA (Last 24 Hours)
+                font_size_header: 12
+                font_size: 90
+                hours_to_show: 24
+                hour24: true
+                points_per_hour: 12
+                line_width: 2
+                smoothing: false
+                show:
+                  labels: true
+                color_thresholds_transition: hard
+                color_thresholds:
+                  - value: 0
+                    color: '#4fc1ff'
+                  - value: 200
+                    color: orange
+              - type: 'custom:mini-graph-card'
+                entities:
+                  - entity: sensor.yahoofinance_amd_f
+                name: AMD FRA (Last 24 Hours)
+                font_size_header: 12
+                font_size: 90
+                hours_to_show: 24
+                hour24: true
+                points_per_hour: 12
+                line_width: 2
+                smoothing: false
+                show:
+                  labels: true
+                color_thresholds_transition: hard
+                color_thresholds:
+                  - value: 0
+                    color: '#4fc1ff'
+                  - value: 200
+                    color: orange

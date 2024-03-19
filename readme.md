@@ -58,9 +58,38 @@ fi
 }
 ```
 
+on 06.03 I got this error:
+```sh
+mount error: could not resolve address for 192.168.178.143:8123: Unknown error
+```
+
+**Solution**: 
+Restart Smaba share did not work....
+Reboot HA .... -> worked!
+
 ### Visual Studio Addon
 [visual code extension](https://www.youtube.com/watch?v=j9Gp2UbQ390)
+
+### Multiple dashboard files
+see [here](https://community.home-assistant.io/t/splittint-dashboard-yaml-file/587127/3)
+
+```bash
+# add this to your configuration.yaml
+# use yaml mode for dashboards!
+lovelace:
+  mode: yaml
+``` 
+
+### Restart from terminal
+```bash
+curl -X POST -H "Authorization: Bearer $(HA-APIKey)" \
+     -H "Content-Type: application/json" \
+     $(HA-URL)/api/services/homeassistant/restart
+# alternatively:
+hassio ha restart 
+```
 
 <!-- 
 online: https://github.com/CesMak/lacht_ha
 -->
+

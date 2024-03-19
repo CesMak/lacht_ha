@@ -118,3 +118,43 @@ template:
         device_class: energy
         state: >
           {{ (states('sensor.total_exported_energy_compensation')) | float |round(2) }}
+
+        # Zaehlerstand Elektrisch
+        # 180: 1051        05.03.2024    KAUF    -- 1064.7 = total_imported_energy
+        # 280: 4154        05.03.2024    VERKAUF -- 4084   = total_exported_energy
+      - name: "e_meter_import"
+        unit_of_measurement: kwh
+        device_class: power
+        state: >
+          {% set input = states('sensor.total_imported_energy') | float(default=0) %}
+          {% set offset = 14 %}
+          {{ input-offset }}
+      - name: "e_meter_export"
+        unit_of_measurement: kwh
+        device_class: power
+        state: >
+          {% set input = states('sensor.total_exported_energy') | float(default=0) %}
+          {% set offset_e = 70 %}
+          {{ input+offset_e }}
+
+        # Rentability analysis  - Rentabilität Analyse
+        # Energie Kosten Berechnung seit 07.2023
+        # Einkauf: 35ct/kWh
+        # Verkauf: 8ct/kWh
+      - name: "total_energy_costs"
+        unit_of_measurement: €
+        device_class: energy
+        state: >
+          {% set costs = states('sensor.e_meter_import') | float(default=0) %}
+          {% set savings = states('sensor.e_meter_export') | float(default=0) %}
+          {% set buy = 0.35 %}
+          {% set sell = 0.08 %}
+          {{ -1.0 * savings*sell + costs*buy | round(1) }}
+      - name: "total_energy_savings"
+        unit_of_measurement: €
+        device_class: energy
+        state: >
+          {% set required = states('sensor.total_consumed_energy') | float(default=0) %}
+          {% set pvcosts = states('sensor.total_energy_cost') | float(default=0) %}
+          {% set buy = 0.35 %}
+          {{ required*buy - pvcosts | round(1) }}
